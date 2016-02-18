@@ -4,7 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class Test 
+public class TestOracleDb 
 {
 	public static void main(String args[]) 
 	{
@@ -12,24 +12,26 @@ public class Test
 	}
 	
 	public static void loadDb()
-	{    
-		Connection con;
+	{
 		try 
 		{
-			con = DriverManager.getConnection( "jdbc:ucanaccess://" + System.getProperty("user.dir") + "\\src\\Recipe_test.accdb" );
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			
+			Connection con = DriverManager.getConnection( "jdbc:oracle:thin:@localhost:1521:xe", "user", "pass" );//user - name for connection : pass - password for connection edit
 			Statement st = con.createStatement();
-			int id = getLastID( st );
 			
 			try
 			{
-				st.execute( "CREATE TABLE Rec2( rec_ID COUNTER PRIMARY KEY, rec_name text(30), difficulty text(15) )" );
+				st.execute( "CREATE TABLE Rec2( rec_ID integer, rec_name varchar(30), difficulty varchar(15), PRIMARY KEY (rec_ID) )" );
 			} catch (SQLException e) 
 			{
 				System.out.println("rec2 already exist");
 			}
 			
+			int id = getLastID( st );
+			
 			st.executeUpdate( "INSERT INTO Rec2 " +
-					" VALUES( " + id + ", 'fish" + id + "', 'moderate" + id + "' )" );//appends the id number to each column
+					" VALUES( " + id + ", 'fish" + id + "', 'moderate" + id + "' )" );
 			
 			ResultSet rs = st.executeQuery( "SELECT * FROM Rec2" );
 			
@@ -37,11 +39,16 @@ public class Test
 			{
 				System.out.println(rs.getString( "rec_ID" ) + " " + rs.getString( "rec_name" ) + " " + rs.getString( "difficulty" ) );
 			}
+			
 			con.commit();
 			con.close();
 		} catch (SQLException e) 
 		{
 			e.printStackTrace();
+		}
+		catch (ClassNotFoundException e1) 
+		{
+			e1.printStackTrace();
 		}
 	}
 	
@@ -51,19 +58,13 @@ public class Test
 		
 		try 
 		{
-			ResultSet rs = st.executeQuery( "SELECT rec_ID FROM Rec2" );
-			
-			while(rs.next())
-			{
-				if( rs.isLast() )
-				{
-					id = rs.getInt( "rec_ID" );
-				}
-			}
-		} catch (SQLException e) 
-		{
+			ResultSet rs = st.executeQuery( "SELECT rec_ID FROM Rec2 ORDER BY rec_ID DESC" );
+			rs.next();
+			id = rs.getInt( "rec_ID" );
+		} catch (SQLException e) {
 			e.printStackTrace();
 		}
 		return id + 1;
 	}
+	
 }
