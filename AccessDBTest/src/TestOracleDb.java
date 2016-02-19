@@ -17,23 +17,23 @@ public class TestOracleDb
 		{
 			Class.forName("oracle.jdbc.driver.OracleDriver");
 			
-			Connection con = DriverManager.getConnection( "jdbc:oracle:thin:@localhost:1521:xe", "user", "pass" );//user - name for connection : pass - password for connection edit
+			Connection con = DriverManager.getConnection( "jdbc:oracle:thin:@vaaaldez.us.to:1521:xe", "knightwriter", "knightwriter" );
 			Statement st = con.createStatement();
 			
 			try
 			{
-				st.execute( "CREATE TABLE Rec2( rec_ID integer, rec_name varchar(30), difficulty varchar(15), PRIMARY KEY (rec_ID) )" );
-			} catch (SQLException e) 
+				st.execute( "CREATE TABLE Recipe_test( rec_ID integer, rec_name varchar(30), difficulty varchar(15), PRIMARY KEY (rec_ID) )" );
+			} catch (SQLException e)
 			{
-				System.out.println("rec2 already exist");
+				//System.out.println("Recipe_test already exist");
 			}
 			
 			int id = getLastID( st );
 			
-			st.executeUpdate( "INSERT INTO Rec2 " +
+			st.executeUpdate( "INSERT INTO Recipe_test " +
 					" VALUES( " + id + ", 'fish" + id + "', 'moderate" + id + "' )" );
 			
-			ResultSet rs = st.executeQuery( "SELECT * FROM Rec2" );
+			ResultSet rs = st.executeQuery( "SELECT * FROM Recipe_test" );
 			
 			while(rs.next())
 			{
@@ -58,9 +58,12 @@ public class TestOracleDb
 		
 		try 
 		{
-			ResultSet rs = st.executeQuery( "SELECT rec_ID FROM Rec2 ORDER BY rec_ID DESC" );
-			rs.next();
-			id = rs.getInt( "rec_ID" );
+			ResultSet rs = st.executeQuery( "SELECT rec_ID FROM Recipe_test ORDER BY rec_ID DESC" );
+			if (rs != null)
+			{
+				rs.next();
+				id = rs.getInt( "rec_ID" );
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
