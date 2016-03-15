@@ -1,0 +1,13 @@
+rec_ID;rec_name;difficulty;prep_time;cook_time;total_time;servings;personal_rating;course;cuisine;instructions;contributor;source;
+1020;fish1020;moderate1020;11.0;11.0;11.0;11.0;null;Entree;Italian;Test Rec;user;null;
+1021;fish1021;moderate1021;11.0;11.0;11.0;11.0;null;Entree;Italian;Test Rec;user;null;
+Ing_Line
+rec_ID;ing_ID;line_quantity;line_unit;
+1020;1059;6.0;unit;
+1020;1064;0.5;cup;
+1020;1065;2.5;lb;
+1021;1059;9.0;unit;
+1021;1064;3.5;cup;
+1021;1065;6.5;lb;
+1021;1059;3.0;unit;
+1021;1064;1.5;cup;

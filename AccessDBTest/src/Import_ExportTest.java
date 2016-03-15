@@ -19,12 +19,13 @@ public class Import_ExportTest
 {
 	static Connection con;
 	static Statement st;
+	static File csv;
 	
 	public static void main(String args[]) throws SQLException, IOException
 	{
 		Scanner in = new Scanner(System.in);
 		boolean close = false;
-		File csv = new File( System.getProperty("user.dir") + "\\src\\data.csv" );
+		csv = new File( System.getProperty("user.dir") + "\\src\\data.csv" );
 		connectToDB();
 		
 		while (!close)
@@ -36,10 +37,10 @@ public class Import_ExportTest
 					addTestRec();
 					break;
 				case 2:
-					exportRecs( csv );
+					exportData();
 					break;
 				case 3:
-					importRecs( csv );
+					importData();
 					break;
 				case 4:
 					displayRecs();
@@ -87,19 +88,29 @@ public class Import_ExportTest
 		{
 			e.printStackTrace();
 		}
-		return id + 1;
+		return id;
 	}
 	
 	public static void addTestRec() throws SQLException
 	{
-		int id = getLastID( );
-		System.out.println( "Last id + 1 = " + id );
+		int id = getLastID( ) + 1;
 		
-		st.executeUpdate( "INSERT INTO Recipe " +
-			" VALUES( " + id + ", 'fish" + id + "', 'moderate" + id + "' , 11, 11, 11, 11, null, 'Entree', 'Italian', 'Test Rec', 'user', null)" );
+		st.executeUpdate( String.format( "INSERT INTO Recipe "
+				+ "VALUES( %d, 'fish%d', 'moderate%d' , 11, 11, 11, 11, null, 'Entree', 'Italian', 'Test Recipe', 'user', null)", id, id, id ) );
+		
+		id = getLastID( );
+		
+		st.executeUpdate( String.format( "INSERT INTO Ing_Line "
+				+ "VALUES( %d, 1059, 6, 'unit' )", id ) );
+		st.executeUpdate( String.format( "INSERT INTO Ing_Line "
+				+ "VALUES( %d, 1064, .5, 'cup' )", id ) );
+		st.executeUpdate( String.format( "INSERT INTO Ing_Line "
+				+ "VALUES( %d, 1065, 2.5, 'lb' )", id ) );
+		
+		System.out.println("\nTest Recipe & Ingredients Added\n");
 	}
 	
-	public static void importRecs( File csv ) throws IOException, SQLException
+	public static void importData() throws IOException, SQLException
 	{
 		BufferedReader reader;
 		
@@ -113,82 +124,157 @@ public class Import_ExportTest
 			return;
 		}
 		
-		ResultSet rSet = st.executeQuery( "SELECT source FROM Recipe WHERE source IS NULL" );
-		rSet.next();
-		
 		boolean firstln = true;
-		List<String> columns = new ArrayList<String>();
-		ArrayList<String[]> rows = new ArrayList<String[]>();
+		boolean recs = true;
+		List<String> columnsRec = new ArrayList<String>();
+		List<String> columnsIng = new ArrayList<String>();
+		ArrayList<String[]> rowsRec = new ArrayList<String[]>();
+		ArrayList<String[]> rowsIng = new ArrayList<String[]>();
+		
 		for( String line = reader.readLine(); line != null; line = reader.readLine() )
 		{
 			if( firstln )
 			{
-				columns = Arrays.asList( line.split( ";" ) );
-				firstln = false;
-			}
-			else
-			{
-				rows.add( line.split( ";" ) );
-			}
-		}
-		
-		for( int i = 0; i < rows.size(); i++ )
-		{
-			String row = "INSERT INTO Recipe  VALUES( " + getLastID() + ",";
-			for( int j = 1; j < columns.size(); j++ )
-			{
-				if( j == 1 || j == 2 || j == 8 || j == 9 || j == 10 || j == 11)
+				if( recs )
 				{
-					row += "'" + rows.get(i)[j] + ( (  j == columns.size() - 1 )  ? "')" : "'," ) ;
+					columnsRec = Arrays.asList( line.split( ";" ) );
 				}
 				else
 				{
-					try
-					{
-						int numb = Integer.parseInt( rows.get(i)[j] );
-						row += numb + ( (  j == columns.size() - 1 )  ? ")" : "," ) ;
-					}
-					catch( NumberFormatException e)
-					{
-						row +=  rows.get(i)[j] + ( (  j == columns.size() - 1 )  ? ")" : "," ) ;
-					}
+					columnsIng = Arrays.asList( line.split( ";" ) );
 				}
+				firstln = false;
 			}
-			System.out.println( "\nColumns Size: " + columns.size() + "\nRow : " + row );
-			st.executeUpdate( row );
-		}
-		
-		ResultSet rs = st.executeQuery( "SELECT * FROM Recipe"
-				+ " WHERE contributor IN ('user', null)" );
-		
-		System.out.println("\nImported Recipes:");
-		while(rs.next())
-		{
-			for( int i = 1; i <= columns.size(); i++ )
+			else if( line.equals( "Ing_Line" ) )
 			{
-				System.out.print(rs.getString( i )  + " " );
+				recs = false;
+				firstln = true;
+			}
+			else if( recs )
+			{
+				rowsRec.add( line.split( ";" ) );
 			}
 			
-			System.out.println();
+			else
+			{
+				rowsIng.add( line.split( ";" ) );
+			}
+			//System.out.println("Line is: " + line);
 		}
-		System.out.println();
+		
+		//System.out.println( "Columns: " + columnsRec.size() + "\nRows: " + rowsRec.size() );
+		
+		List<Integer> ids = importRec( columnsRec, rowsRec, rowsIng );
+		importIng( ids, columnsIng, rowsIng );
 		
 		reader.close();
 	}
 	
-	public static void exportRecs( File csv ) throws IOException, SQLException
+	private static List<Integer> importRec( List<String> columns, ArrayList<String[]> rows, ArrayList<String[]> rowsIng ) throws SQLException
 	{
-		ResultSet rs = st.executeQuery( "SELECT * FROM Recipe"
+		String impRecs = "";
+		ArrayList<Integer> ids = new ArrayList<Integer>();
+		
+		for( int i = 0; i < rows.size(); i++ )
+		{
+			int id = getLastID() + 1;
+			for( int k = 0; k < rowsIng.size(); k++ )
+			{
+				if( rows.get(i)[0].equals( rowsIng.get(k)[0] ) )
+				{
+					ids.add( id );
+				}
+			}
+			String row = "INSERT INTO Recipe  VALUES( " + id + ",";
+			impRecs += id + " "; 
+					
+			for( int j = 1; j < columns.size(); j++ )
+			{
+				try
+				{
+					int numb = Integer.parseInt( rows.get(i)[j] );
+					row += numb + ( (  j == columns.size() - 1 )  ? ")" : "," ) ;
+				}
+				catch( NumberFormatException e)
+				{
+					if( rows.get(i)[j].matches("null") )
+					{
+						row +=  rows.get(i)[j] + ( (  j == columns.size() - 1 )  ? ")" : "," ) ;
+					}
+					else
+					{
+						row += "'" + rows.get(i)[j] + ( (  j == columns.size() - 1 )  ? "')" : "'," ) ;
+					}
+				}
+				impRecs += rows.get(i)[j] + " ";
+			}
+			impRecs += "\n";
+			st.executeUpdate( row );
+		}
+		
+		System.out.println("\nImported Recipes:");
+		System.out.println( impRecs );
+		
+		return ids;
+	}
+	
+	private static void importIng( List<Integer> ids, List<String> columns, ArrayList<String[]> rows )
+	{
+		String impIngs = "";
+		
+		for( int i = 0; i < rows.size(); i++ )
+		{
+			int id = ids.get( i );
+			impIngs += id + " ";
+			String row = "INSERT INTO Ing_Line VALUES( " + id + ",";
+			
+			for( int j = 1; j < columns.size(); j++ )
+			{
+				try
+				{
+					int numb = Integer.parseInt( rows.get(i)[j] );
+					row += numb + ( (  j == columns.size() - 1 )  ? ")" : "," ) ;
+				}
+				catch( NumberFormatException e)
+				{
+					row += "'" + rows.get(i)[j] + ( (  j == columns.size() - 1 )  ? "')" : "'," ) ;
+				}
+				impIngs += rows.get(i)[j] + " ";
+			}
+				impIngs += "\n";
+				try
+				{
+					st.executeUpdate( row );
+				}
+				catch( SQLException e )
+				{}
+		}
+		
+		System.out.println("\nImported Ing_List:");
+		System.out.println( impIngs + "\n");
+	}
+
+	public static void exportData() throws SQLException, FileNotFoundException
+	{
+		ResultSet recipes = st.executeQuery( "SELECT * FROM Recipe"
 				+ " WHERE contributor IN ('user', null)" );
 		
-		if( !rs.isBeforeFirst() )
+		if( !recipes.isBeforeFirst() )
 		{
 			System.out.println( "\nNo data to export\n" );
 			return;
 		}
 		
 		PrintWriter writer = new PrintWriter(csv);
-		ResultSetMetaData meta = rs.getMetaData();
+		exportRec( recipes, writer );
+		exportIng( writer );
+		
+		writer.close();
+	}
+	
+	public static void exportRec( ResultSet recipes, PrintWriter writer ) throws SQLException
+	{
+		ResultSetMetaData meta = recipes.getMetaData();
 		int numCol = meta.getColumnCount();
 		
 		String columns = "";
@@ -199,23 +285,73 @@ public class Import_ExportTest
 		
 		writer.println( columns );
 		System.out.println( "\nExported Recipes:" );
-		while( rs.next() )
+		while( recipes.next() )
 		{
 			String row = "";
 			for( int i = 1; i <= numCol; i++ )
 			{
-				row += rs.getString(i) + ";";
+				row += recipes.getString(i) + ";";
 			}
 			writer.println( row );
 			
 			for( int i = 1; i <= numCol; i++ )
 			{
-				System.out.print(rs.getString( i )  + " " );
+				System.out.print(recipes.getString( i )  + " " );
+			}
+			System.out.println();
+		}
+	}
+	
+	public static void exportIng( PrintWriter writer ) throws SQLException
+	{
+		ResultSet recId = st.executeQuery( "SELECT rec_ID FROM Recipe"
+				+ " WHERE contributor IN ('user', null)" );
+		
+		String statement = "SELECT * FROM Ing_Line WHERE rec_ID IN (" ;
+		
+		while( recId.next() )
+		{
+			if( recId.isLast() )
+			{
+				statement += recId.getString(1) + ")";
+			}
+			else
+			{
+				statement += recId.getString(1) + ", ";
+			}
+		}
+		
+		ResultSet ingList = st.executeQuery( statement );
+		
+		ResultSetMetaData meta = ingList.getMetaData();
+		int numCol = meta.getColumnCount();
+		
+		String columns = "";
+		for( int i = 1; i <= numCol; i ++ )
+		{
+			columns += meta.getColumnName(i) + ";";
+		}
+		
+		writer.println("Ing_Line");
+		writer.println( columns );
+		
+		System.out.println( "\nExported Ing_List:" );
+		while( ingList.next() )
+		{
+			String row = "";
+			for( int i = 1; i <= numCol; i++ )
+			{
+				row += ingList.getString(i) + ";";
+			}
+			writer.println( row );
+			
+			for( int i = 1; i <= numCol; i++ )
+			{
+				System.out.print( ingList.getString( i )  + " " );
 			}
 			System.out.println();
 		}
 		System.out.println();
-		writer.close();
 	}
 	
 	public static void displayRecs() throws SQLException
