@@ -1,0 +1,51 @@
+rec_ID|rec_name|difficulty|prep_time|cook_time|total_time|servings|personal_rating|course|cuisine|instructions|contributor|source|
+1016|Carnitas|moderate|15.0|360.0|375.0|12.0|null|Entrée|Mexican|In a small bowl combine salt, pepper, chili powder, cumin, and garlic powder and mix until even. Then rub seasoning all over the pork shoulder.@Place the chopped onion in the bottom of the slow cooker. Place the pork in a slow cooker (fat cap up) on top of the onino. Squeeze over the juice of the orange.@Cook on low for 6 hours.@Remove from the slow cooker and let cool slightly. Then shred the pork using two forks.@Skim off the fat from the juices remaining in the slow cooker and discard the fat. Then if you are left with a lot more than 1½ to 2 cups of juice, reduce it (either in the slow cooker on the sauté setting with the lid off, or in a saucepan). Mix the reduced liquid back into the meat.@Warm tortillas and fill with carnitas. Serve.|user|http://www.recipetineats.com/pork-carnitas-mexican-slow-cooker-pulled-pork/|
+1017|Steak Fajitas|moderate|250.0|30.0|280.0|6.0|null|Entrée|Mexican|In a sturdy ziplock bag, combine the orange juice, lime juice, 2 Tbs olive oil, minced garlic, chopped cilantro, cumin, and salt. Mix well. Add the flank steak to the bag and shake to coat evenly. Refrigerate and let marinate for 2-4 hours.@Preheat gas or charcoal grill.@Drain the marinade from the beef. Lightly oil the grill or grill pan. Season liberally with salt and freshly ground black pepper. Grill the steak over medium-high heat and cook for 4 minutes on each side and then transfer to a cutting board and let rest.@Meanwhile, in a large pan, add the bell peppers and onions and cook until limp, about 6 minutes.@While the peppers and onions are cooking, heat up the tortillas. Turn any free burners on a medium low flame. Place a tortilla on each flame and let it char about 30 seconds to 1 minute, flip the tortilla and repeat on the second side. Once heated and charred remove the tortilla to a clean tea towel and wrap to keep warm. Repeat until you have warmed all of your tortillas.@You can also heat your tortillas in a microwave, lightly dampen a tea towel with some water, wrap the tortillas in the damp towel and heat in the microwave for about 1 minute. Check to see if they are warm, if not repeat the heating at 1 minute intervals until they are warm and pliable.@Thinly slice the steak against the grain on a diagonal. Combine the steak with the peppers and onions and server on warmed tortillas.|user|http://www.foodnetwork.com/recipes/tyler-florence/fajitas-recipe2.html|
+1018|Chicken Quesadilla|moderate|20.0|20.0|40.0|3.0|null|Entrée|Mexican|Dice chicken breast. Season with salt, pepper, chili powder, cumin, and garlic powder.@Preheat broiler and grease a baking sheet. Place diced, seasoned chicken under the broiler and cook until the chicken pieces are no longer pink in the center, about 5 minutes.@Preheat oven to 350 degrees F (175 degrees C).@Heat the oil in a large saucepan over medium heat. Stir in the bell peppers, onion, and chicken. Cook and stir until the vegetables have softened, about 8 minutes.@Layer half of each tortilla with the chicken and vegetable mixture, then sprinkle with the shredded Cheddar cheese and Monterey Jack. Fold the tortillas in half and Place onto a baking sheet.@Bake quesadillas in the preheated oven until the cheeses have melted, about 10 minutes.|user|http://allrecipes.com/recipe/21659/chicken-quesadillas/|
+1019|Chicken Fajitas|easy|70.0|15.0|85.0|4.0|null|Entrée|Mexican|Trim and slice chicken breasts thin.@In a large ziplock bag, combine 3 Tbs olive oil, salt, pepper, lime juice, garlic powder, chili powder, cumin, and cilantro. Mix well.@Add chicken to bag and marinate at room temperature for 1 hour.@Remove chicken from marinade and pat dry. Heat olive oil in a large frying pan on high heat and brown 3-4 minutes on each side. Remove chicken to a plate and let cool.@In the same pain, add another Tbs of olive oil and sautee peppers and onions for 3-4 minutes.@Slice chicken breast and combine with peppers and onions. Serve on warm tortillas.|user|http://www.simplyrecipes.com/recipes/chicken_fajitas/|
+Ing_Line
+rec_ID|ing_ID|line_quantity|line_unit|
+1016|1006|2.0|tsp|
+1016|1023|1.0|cup|
+1016|1026|0.5|tsp|
+1016|1053|2.0|Tbs|
+1016|1054|2.0|Tbs|
+1016|1055|1.0|Tbs|
+1016|1059|12.0|unit|
+1016|1063|4.0|lb|
+1016|1064|0.5|cup|
+1017|1006|2.0|tsp|
+1017|1017|1.0|Tbs|
+1017|1023|1.0|cup|
+1017|1026|0.5|tsp|
+1017|1054|2.0|tsp|
+1017|1059|6.0|unit|
+1017|1064|0.5|cup|
+1017|1065|2.5|lb|
+1017|1066|0.25|cup|
+1017|1067|0.25|cup|
+1017|1068|2.0|cup|
+1018|1006|1.0|tsp|
+1018|1014|1.0|lb|
+1018|1017|1.0|Tbs|
+1018|1023|1.0|cup|
+1018|1026|0.5|tsp|
+1018|1053|2.0|tsp|
+1018|1054|1.0|tsp|
+1018|1055|1.0|tsp|
+1018|1059|4.0|unit|
+1018|1068|1.0|cup|
+1018|1069|8.0|oz|
+1018|1070|8.0|oz|
+1019|1006|1.0|tsp|
+1019|1014|1.25|lb|
+1019|1017|5.0|Tbs|
+1019|1023|1.0|cup|
+1019|1026|0.5|tsp|
+1019|1053|2.0|tsp|
+1019|1054|1.0|tsp|
+1019|1055|1.0|tsp|
+1019|1059|4.0|unit|
+1019|1066|2.0|Tbs|
+1019|1067|0.25|cup|
+1019|1068|1.0|cup|
