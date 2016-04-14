@@ -15,7 +15,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Scanner;
 
 public class ImportExport 
 {
@@ -46,7 +45,8 @@ public class ImportExport
 			
 			while( recipes.next() )
 			{
-				list += "\u2022" + recipes.getString(2) + "\r\n";
+				//list += "\u2022" + recipes.getString(2) + "\r\n";
+				list += recipes.getString(2) + "\r\n";
 			}
 		} catch (SQLException e)
 		{
@@ -78,7 +78,7 @@ public class ImportExport
 				}
 				else
 				{
-					list += "\u2022" +line.split( "\\|" )[1] + "\n" ;
+					list += line.split( "\\|" )[1] + "\n" ;
 				}
 			}
 			
@@ -119,7 +119,7 @@ public class ImportExport
 		}
 	}
 	
-	public static void importData()
+	public static void importData( ArrayList<Boolean> selected )
 	{
 		BufferedReader reader;
 		
@@ -171,8 +171,8 @@ public class ImportExport
 					rowsIng.add( line.split( "\\|" ) );
 				}
 			}
-			ids = importRec( columnsRec, rowsRec, rowsIng );
 			
+			ids = importRec( columnsRec, rowsRec, rowsIng, selected );
 			importIng( ids, columnsIng, rowsIng );
 			
 			reader.close();
@@ -185,7 +185,7 @@ public class ImportExport
 		}
 	}
 	
-	private static List<Integer> importRec( List<String> columns, ArrayList<String[]> rows, ArrayList<String[]> rowsIng ) throws SQLException
+	private static List<Integer> importRec( List<String> columns, ArrayList<String[]> rows, ArrayList<String[]> rowsIng, ArrayList<Boolean> selected ) throws SQLException
 	{
 		ArrayList<Integer> ids = new ArrayList<Integer>();
 		
@@ -196,31 +196,42 @@ public class ImportExport
 			{
 				if( rows.get(i)[0].equals( rowsIng.get(k)[0] ) )
 				{
-					ids.add( id );
-				}
-			}
-			String row = "INSERT INTO Recipe  VALUES( " + id + ",";
-					
-			for( int j = 1; j < columns.size(); j++ )
-			{
-				try
-				{
-					int numb = Integer.parseInt( rows.get(i)[j] );
-					row += numb + ( (  j == columns.size() - 1 )  ? ")" : "," ) ;
-				}
-				catch( NumberFormatException e)
-				{
-					if( rows.get(i)[j].matches("null") )
+					if( selected.get( i ) )
 					{
-						row +=  rows.get(i)[j] + ( (  j == columns.size() - 1 )  ? ")" : "," ) ;
+						ids.add( id );
 					}
 					else
 					{
-						row += "'" + rows.get(i)[j].replaceAll( "@", "' + CHAR(13)+CHAR(10) + '" ) + ( (  j == columns.size() - 1 )  ? "')" : "'," ) ;
+						ids.add( -1 );
 					}
 				}
 			}
-			st.executeUpdate( row );
+			
+			if( selected.get( i ) )
+			{
+				String row = "INSERT INTO Recipe  VALUES( " + id + ",";
+						
+				for( int j = 1; j < columns.size(); j++ )
+				{
+					try
+					{
+						int numb = Integer.parseInt( rows.get(i)[j] );
+						row += numb + ( (  j == columns.size() - 1 )  ? ")" : "," ) ;
+					}
+					catch( NumberFormatException e)
+					{
+						if( rows.get(i)[j].matches("null") )
+						{
+							row +=  rows.get(i)[j] + ( (  j == columns.size() - 1 )  ? ")" : "," ) ;
+						}
+						else
+						{
+							row += "'" + rows.get(i)[j].replaceAll( "@", "' + CHAR(13)+CHAR(10) + '" ) + ( (  j == columns.size() - 1 )  ? "')" : "'," ) ;
+						}
+					}
+				}
+				st.executeUpdate( row );
+			}
 		}
 		
 		return ids;
@@ -228,55 +239,50 @@ public class ImportExport
 	
 	private static void importIng( List<Integer> ids, List<String> columns, ArrayList<String[]> rows )
 	{
-		String impIngs = "";
-		
 		for( int i = 0; i < rows.size(); i++ )
 		{
-			int id = ids.get( i );
-			impIngs += id + " ";
-			String row = "INSERT INTO Ing_Line VALUES( " + id + ",";
-			
-			for( int j = 1; j < columns.size(); j++ )
+			if( ids.get( i ) != -1 )
 			{
-				try
+				int id = ids.get( i );
+				String row = "INSERT INTO Ing_Line VALUES( " + id + ",";
+				
+				for( int j = 1; j < columns.size(); j++ )
 				{
-					int numb = Integer.parseInt( rows.get(i)[j] );
-					row += numb + ( (  j == columns.size() - 1 )  ? ")" : "," ) ;
+					try
+					{
+						int numb = Integer.parseInt( rows.get(i)[j] );
+						row += numb + ( (  j == columns.size() - 1 )  ? ")" : "," ) ;
+					}
+					catch( NumberFormatException e)
+					{
+						row += "'" + rows.get(i)[j] + ( (  j == columns.size() - 1 )  ? "')" : "'," ) ;
+					}
 				}
-				catch( NumberFormatException e)
-				{
-					row += "'" + rows.get(i)[j] + ( (  j == columns.size() - 1 )  ? "')" : "'," ) ;
-				}
-				impIngs += rows.get(i)[j] + " ";
-			}
-				impIngs += "\n";
 				try
 				{
 					st.executeUpdate( row );
 				}
-				catch( SQLException e )
-				{}
+				catch( SQLException e ){}
+			}
 		}
-		
-		System.out.println("\nImported Ing_List:");
-		System.out.println( impIngs + "\n");
+			
 	}
 
-	public static void exportData()
+	public static void exportData( ArrayList<Boolean> selected )
 	{
 		try
 		{
 			ResultSet recipes = st.executeQuery( "SELECT * FROM Recipe"
 					+ " WHERE contributor IN ('user', null)" );
 			
-			if( !recipes.isBeforeFirst() )
+			if( !recipes.isBeforeFirst() || !selected.contains(true) )
 			{
 				return;
 			}
 			
 			PrintWriter writer = new PrintWriter(csv);
-			exportRec( recipes, writer );
-			exportIng( writer );
+			exportRec( recipes, writer, selected );
+			exportIng( writer, selected );
 			
 			writer.close();
 		} catch (SQLException e) 
@@ -293,7 +299,7 @@ public class ImportExport
 		
 	}
 	
-	public static void exportRec( ResultSet recipes, PrintWriter writer ) throws SQLException
+	public static void exportRec( ResultSet recipes, PrintWriter writer, ArrayList<Boolean> selected ) throws SQLException
 	{
 		ResultSetMetaData meta = recipes.getMetaData();
 		int numCol = meta.getColumnCount();
@@ -306,34 +312,44 @@ public class ImportExport
 		
 		writer.println( columns );
 		
+		int j = 0;
 		while( recipes.next() )
 		{
-			String row = "";
-			for( int i = 1; i <= numCol; i++ )
+			if( selected.get( j ) )
 			{
-				row += recipes.getString(i) + "|";
+				String row = "";
+				for( int i = 1; i <= numCol; i++ )
+				{
+					row += recipes.getString(i) + "|";
+				}
+				writer.println( row.replaceAll( "\r\n\r\n<div>&nbsp;</div>\r\n\r\n", "@" ).replaceAll( "<div>", "" ).replaceAll( "</div>", "" ) );
 			}
-			writer.println( row.replaceAll( "\r\n\r\n<div>&nbsp;</div>\r\n\r\n", "@" ).replaceAll( "<div>", "" ).replaceAll( "</div>", "" ) );
+			j++;
 		}
 	}
 	
-	public static void exportIng( PrintWriter writer ) throws SQLException
+	public static void exportIng( PrintWriter writer, ArrayList<Boolean> selected ) throws SQLException
 	{
 		ResultSet recId = st.executeQuery( "SELECT rec_ID FROM Recipe"
 				+ " WHERE contributor IN ('user', null)" );
 		
 		String statement = "SELECT * FROM Ing_Line WHERE rec_ID IN (" ;
 		
+		int j = 0;
 		while( recId.next() )
 		{
-			if( recId.isLast() )
+			if( selected.get( j ) )
 			{
-				statement += recId.getString(1) + ")";
+				if( j == selected.lastIndexOf( true ) )
+				{
+					statement += recId.getString(1) + ")";
+				}
+				else
+				{
+					statement += recId.getString(1) + ", ";
+				}
 			}
-			else
-			{
-				statement += recId.getString(1) + ", ";
-			}
+			j++;
 		}
 		
 		ResultSet ingList = st.executeQuery( statement );
