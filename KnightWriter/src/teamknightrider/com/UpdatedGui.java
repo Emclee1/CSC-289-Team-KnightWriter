@@ -45,8 +45,8 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.LineBorder;
 
 /**
- * @author KnightWriter  
- *
+ * @author KnightWriter
+ *         
  */
 public class UpdatedGui {
     
@@ -70,14 +70,13 @@ public class UpdatedGui {
     JPanel jpRecipe;
     JPanel jpImport;
     
-   
     JButton btnNewIngredient;
     private JTextField txtContributor;
     private JTextField txtSource;
     private JTextField txtImportStatus;
     private JTextField txtExportStatus;
     
-    //jpRecipe Varables 
+    // jpRecipe Varables
     private String recipe;
     private String course;
     private String difficulity;
@@ -87,20 +86,20 @@ public class UpdatedGui {
     private String contributor;
     private String source;
     ArrayList<String> ingredients = new ArrayList<String>();
-    StringBuilder instructions = new StringBuilder(); 
+    StringBuilder instructions = new StringBuilder();
     
-    //Nutrition facts variables
+    // Nutrition facts variables
     int servingSize;
-    int calories; 
+    int calories;
     int totalFat;
     int saturatedFat;
-    int polyFat; 
+    int polyFat;
     int transFat;
     int cholesterol;
     int sodium;
     int totalCarbohydrate;
-    int sugars; 
-    int protien; 
+    int sugars;
+    int protien;
     int dietaryFiber;
     JLabel lblServingSizeValue;
     JLabel lblCaloriesValue;
@@ -113,15 +112,7 @@ public class UpdatedGui {
     JLabel lblTotalCarbohydrateValue;
     JLabel lblDietaryFiberValue;
     JLabel lblSugarsValue;
-    JLabel lblProtienValues; 
-    
-   
-    
-    
-    
-    
-    
-    
+    JLabel lblProtienValues;
     
     /**
      * Launch the application.
@@ -163,23 +154,21 @@ public class UpdatedGui {
         jpWelcome = new JPanel();
         
         GroupLayout groupLayout = new GroupLayout(frame.getContentPane());
-        groupLayout.setHorizontalGroup(
-            groupLayout.createParallelGroup(Alignment.LEADING)
-                .addGroup(groupLayout.createSequentialGroup()
-                    .addContainerGap()
-                    .addComponent(jpMenu, GroupLayout.PREFERRED_SIZE, 208, GroupLayout.PREFERRED_SIZE)
-                    .addPreferredGap(ComponentPlacement.RELATED)
-                    .addComponent(jpContent, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addContainerGap())
-        );
-        groupLayout.setVerticalGroup(
-            groupLayout.createParallelGroup(Alignment.LEADING)
-                .addComponent(jpContent, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(groupLayout.createSequentialGroup()
-                    .addContainerGap()
-                    .addComponent(jpMenu, GroupLayout.DEFAULT_SIZE, 754, Short.MAX_VALUE)
-                    .addContainerGap())
-        );
+        groupLayout
+                .setHorizontalGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+                        .addGroup(groupLayout.createSequentialGroup().addContainerGap()
+                                .addComponent(jpMenu, GroupLayout.PREFERRED_SIZE, 208,
+                                        GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(ComponentPlacement.RELATED)
+                                .addComponent(jpContent, GroupLayout.DEFAULT_SIZE,
+                                        GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addContainerGap()));
+        groupLayout.setVerticalGroup(groupLayout.createParallelGroup(Alignment.LEADING)
+                .addComponent(jpContent, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE,
+                        Short.MAX_VALUE)
+                .addGroup(groupLayout.createSequentialGroup().addContainerGap()
+                        .addComponent(jpMenu, GroupLayout.DEFAULT_SIZE, 754, Short.MAX_VALUE)
+                        .addContainerGap()));
         jpMenu.setLayout(new MigLayout("", "[grow]",
                 "[50:n][][][][][][15.00][][15.00][][15.00][][21.00][15.00][15.00][][][][][][][][][][]"));
                 
@@ -207,13 +196,10 @@ public class UpdatedGui {
         jpMenu.add(btnNewIngredient, "cell 0 12,growx");
         
         JButton btnRemoveIngredient = new JButton("Remove Ingredient");
-
+        
         jpMenu.add(btnRemoveIngredient, "cell 0 13,grow");
         
         JButton btnImport = new JButton("Import / Export");
-
-
-        
         
         jpMenu.add(btnImport, "cell 0 15,growx");
         
@@ -360,130 +346,255 @@ public class UpdatedGui {
         JLabel lblSource = new JLabel("Source");
         
         GroupLayout gl_jpRecipe = new GroupLayout(jpRecipe);
-        gl_jpRecipe.setHorizontalGroup(
-            gl_jpRecipe.createParallelGroup(Alignment.TRAILING)
-                .addGroup(gl_jpRecipe.createSequentialGroup()
-                    .addGap(4)
-                    .addGroup(gl_jpRecipe.createParallelGroup(Alignment.LEADING)
-                        .addComponent(jpNutritionFacts, GroupLayout.PREFERRED_SIZE, 196, GroupLayout.PREFERRED_SIZE)
-                        .addComponent(scrollPane_1, GroupLayout.PREFERRED_SIZE, 197, GroupLayout.PREFERRED_SIZE))
-                    .addPreferredGap(ComponentPlacement.RELATED)
-                    .addGroup(gl_jpRecipe.createParallelGroup(Alignment.TRAILING, false)
-                        .addGroup(gl_jpRecipe.createSequentialGroup()
-                            .addGap(53)
-                            .addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 706, GroupLayout.PREFERRED_SIZE)
-                            .addGap(15))
-                        .addGroup(gl_jpRecipe.createSequentialGroup()
-                            .addGroup(gl_jpRecipe.createParallelGroup(Alignment.TRAILING)
-                                .addComponent(lblNewLabel_4)
-                                .addComponent(lblNewLabel_3)
-                                .addComponent(lblRecipe)
-                                .addComponent(lblCourse)
-                                .addComponent(lblSettings))
-                            .addPreferredGap(ComponentPlacement.RELATED)
-                            .addGroup(gl_jpRecipe.createParallelGroup(Alignment.LEADING)
+        gl_jpRecipe.setHorizontalGroup(gl_jpRecipe.createParallelGroup(Alignment.TRAILING)
+                .addGroup(gl_jpRecipe.createSequentialGroup().addGap(4)
+                        .addGroup(gl_jpRecipe.createParallelGroup(Alignment.LEADING)
+                                .addComponent(jpNutritionFacts, GroupLayout.PREFERRED_SIZE, 196,
+                                        GroupLayout.PREFERRED_SIZE)
+                                .addComponent(scrollPane_1, GroupLayout.PREFERRED_SIZE, 197,
+                                        GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(ComponentPlacement.RELATED)
+                        .addGroup(gl_jpRecipe.createParallelGroup(Alignment.TRAILING, false)
+                                .addGroup(gl_jpRecipe.createSequentialGroup().addGap(53)
+                                        .addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 706,
+                                                GroupLayout.PREFERRED_SIZE)
+                                        .addGap(15))
                                 .addGroup(gl_jpRecipe.createSequentialGroup()
-                                    .addGroup(gl_jpRecipe.createParallelGroup(Alignment.LEADING)
-                                        .addComponent(textCourse, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(textCusine, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(textDiffcuilty, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                        .addGroup(gl_jpRecipe
+                                                .createParallelGroup(Alignment.TRAILING)
+                                                .addComponent(lblNewLabel_4)
+                                                .addComponent(lblNewLabel_3).addComponent(lblRecipe)
+                                                .addComponent(lblCourse).addComponent(lblSettings))
+                                        .addPreferredGap(ComponentPlacement.RELATED)
+                                        .addGroup(gl_jpRecipe.createParallelGroup(Alignment.LEADING)
+                                                .addGroup(gl_jpRecipe.createSequentialGroup()
+                                                        .addGroup(gl_jpRecipe
+                                                                .createParallelGroup(
+                                                                        Alignment.LEADING)
+                                                                .addComponent(textCourse,
+                                                                        GroupLayout.PREFERRED_SIZE,
+                                                                        GroupLayout.DEFAULT_SIZE,
+                                                                        GroupLayout.PREFERRED_SIZE)
+                                                                .addComponent(textCusine,
+                                                                        GroupLayout.PREFERRED_SIZE,
+                                                                        GroupLayout.DEFAULT_SIZE,
+                                                                        GroupLayout.PREFERRED_SIZE)
+                                                                .addComponent(textDiffcuilty,
+                                                                        GroupLayout.PREFERRED_SIZE,
+                                                                        GroupLayout.DEFAULT_SIZE,
+                                                                        GroupLayout.PREFERRED_SIZE)
+                                                                .addGroup(gl_jpRecipe
+                                                                        .createSequentialGroup()
+                                                                        .addComponent(
+                                                                                comboBoxServings,
+                                                                                GroupLayout.PREFERRED_SIZE,
+                                                                                GroupLayout.DEFAULT_SIZE,
+                                                                                GroupLayout.PREFERRED_SIZE)
+                                                                        .addPreferredGap(
+                                                                                ComponentPlacement.UNRELATED)
+                                                                        .addComponent(
+                                                                                lblPersionalRating)))
+                                                        .addGap(18)
+                                                        .addComponent(btnStar1,
+                                                                GroupLayout.PREFERRED_SIZE, 33,
+                                                                GroupLayout.PREFERRED_SIZE)
+                                                        .addPreferredGap(ComponentPlacement.RELATED)
+                                                        .addGroup(gl_jpRecipe
+                                                                .createParallelGroup(
+                                                                        Alignment.LEADING)
+                                                                .addGroup(gl_jpRecipe
+                                                                        .createSequentialGroup()
+                                                                        .addGroup(gl_jpRecipe
+                                                                                .createParallelGroup(
+                                                                                        Alignment.LEADING)
+                                                                                .addComponent(
+                                                                                        lblCookTime)
+                                                                                .addComponent(
+                                                                                        lblPrepTime)
+                                                                                .addComponent(
+                                                                                        lblTotalTime))
+                                                                        .addPreferredGap(
+                                                                                ComponentPlacement.RELATED)
+                                                                        .addGroup(gl_jpRecipe
+                                                                                .createParallelGroup(
+                                                                                        Alignment.TRAILING,
+                                                                                        false)
+                                                                                .addComponent(
+                                                                                        textTotalTime,
+                                                                                        Alignment.LEADING,
+                                                                                        0, 0,
+                                                                                        Short.MAX_VALUE)
+                                                                                .addComponent(
+                                                                                        textCookTime,
+                                                                                        Alignment.LEADING,
+                                                                                        0, 0,
+                                                                                        Short.MAX_VALUE)
+                                                                                .addComponent(
+                                                                                        textPrepTime,
+                                                                                        Alignment.LEADING,
+                                                                                        GroupLayout.DEFAULT_SIZE,
+                                                                                        32,
+                                                                                        Short.MAX_VALUE))
+                                                                        .addPreferredGap(
+                                                                                ComponentPlacement.RELATED,
+                                                                                126,
+                                                                                Short.MAX_VALUE)
+                                                                        .addGroup(gl_jpRecipe
+                                                                                .createParallelGroup(
+                                                                                        Alignment.LEADING)
+                                                                                .addGroup(
+                                                                                        gl_jpRecipe
+                                                                                                .createParallelGroup(
+                                                                                                        Alignment.LEADING,
+                                                                                                        false)
+                                                                                                .addComponent(
+                                                                                                        txtSource)
+                                                                                                .addComponent(
+                                                                                                        txtContributor,
+                                                                                                        GroupLayout.DEFAULT_SIZE,
+                                                                                                        267,
+                                                                                                        Short.MAX_VALUE)
+                                                                                                .addComponent(
+                                                                                                        lblContributor))
+                                                                                .addComponent(
+                                                                                        lblSource))
+                                                                        .addGap(155))
+                                                                .addGroup(gl_jpRecipe
+                                                                        .createSequentialGroup()
+                                                                        .addGap(2)
+                                                                        .addComponent(btnStar2,
+                                                                                GroupLayout.PREFERRED_SIZE,
+                                                                                41,
+                                                                                GroupLayout.PREFERRED_SIZE)
+                                                                        .addPreferredGap(
+                                                                                ComponentPlacement.RELATED)
+                                                                        .addComponent(btnStar3,
+                                                                                GroupLayout.PREFERRED_SIZE,
+                                                                                35,
+                                                                                GroupLayout.PREFERRED_SIZE)
+                                                                        .addPreferredGap(
+                                                                                ComponentPlacement.RELATED)
+                                                                        .addComponent(btnStar4,
+                                                                                GroupLayout.PREFERRED_SIZE,
+                                                                                33,
+                                                                                GroupLayout.PREFERRED_SIZE)
+                                                                        .addGap(6)
+                                                                        .addComponent(btnStar5,
+                                                                                GroupLayout.PREFERRED_SIZE,
+                                                                                41,
+                                                                                GroupLayout.PREFERRED_SIZE)
+                                                                        .addContainerGap(466,
+                                                                                Short.MAX_VALUE))))
+                                                .addGroup(gl_jpRecipe.createSequentialGroup()
+                                                        .addComponent(textRecipeSelected,
+                                                                GroupLayout.PREFERRED_SIZE, 309,
+                                                                GroupLayout.PREFERRED_SIZE)
+                                                        .addContainerGap(497,
+                                                                Short.MAX_VALUE)))))));
+        gl_jpRecipe.setVerticalGroup(gl_jpRecipe.createParallelGroup(Alignment.LEADING)
+                .addGroup(gl_jpRecipe.createSequentialGroup().addContainerGap()
+                        .addGroup(gl_jpRecipe.createParallelGroup(Alignment.LEADING)
+                                .addGroup(gl_jpRecipe.createSequentialGroup()
+                                        .addComponent(jpNutritionFacts, GroupLayout.PREFERRED_SIZE,
+                                                310, GroupLayout.PREFERRED_SIZE)
+                                        .addGap(18).addComponent(scrollPane_1,
+                                                GroupLayout.PREFERRED_SIZE, 303,
+                                                GroupLayout.PREFERRED_SIZE))
+                        .addGroup(gl_jpRecipe.createSequentialGroup()
+                                .addGroup(gl_jpRecipe.createParallelGroup(Alignment.TRAILING)
                                         .addGroup(gl_jpRecipe.createSequentialGroup()
-                                            .addComponent(comboBoxServings, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                            .addPreferredGap(ComponentPlacement.UNRELATED)
-                                            .addComponent(lblPersionalRating)))
-                                    .addGap(18)
-                                    .addComponent(btnStar1, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(ComponentPlacement.RELATED)
-                                    .addGroup(gl_jpRecipe.createParallelGroup(Alignment.LEADING)
+                                                .addGroup(gl_jpRecipe
+                                                        .createParallelGroup(Alignment.BASELINE)
+                                                        .addComponent(textRecipeSelected,
+                                                                GroupLayout.PREFERRED_SIZE, 29,
+                                                                GroupLayout.PREFERRED_SIZE)
+                                                .addComponent(lblRecipe)).addGap(18))
+                                .addGroup(gl_jpRecipe.createSequentialGroup()
+                                        .addComponent(lblContributor)
+                                        .addPreferredGap(ComponentPlacement.RELATED)))
+                                .addGroup(gl_jpRecipe.createParallelGroup(Alignment.TRAILING)
+                                        .addComponent(btnStar5, GroupLayout.PREFERRED_SIZE, 32,
+                                                GroupLayout.PREFERRED_SIZE)
                                         .addGroup(gl_jpRecipe.createSequentialGroup()
-                                            .addGroup(gl_jpRecipe.createParallelGroup(Alignment.LEADING)
-                                                .addComponent(lblCookTime)
-                                                .addComponent(lblPrepTime)
-                                                .addComponent(lblTotalTime))
-                                            .addPreferredGap(ComponentPlacement.RELATED)
-                                            .addGroup(gl_jpRecipe.createParallelGroup(Alignment.TRAILING, false)
-                                                .addComponent(textTotalTime, Alignment.LEADING, 0, 0, Short.MAX_VALUE)
-                                                .addComponent(textCookTime, Alignment.LEADING, 0, 0, Short.MAX_VALUE)
-                                                .addComponent(textPrepTime, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE))
-                                            .addPreferredGap(ComponentPlacement.RELATED, 126, Short.MAX_VALUE)
-                                            .addGroup(gl_jpRecipe.createParallelGroup(Alignment.LEADING)
-                                                .addGroup(gl_jpRecipe.createParallelGroup(Alignment.LEADING, false)
-                                                    .addComponent(txtSource)
-                                                    .addComponent(txtContributor, GroupLayout.DEFAULT_SIZE, 267, Short.MAX_VALUE)
-                                                    .addComponent(lblContributor))
-                                                .addComponent(lblSource))
-                                            .addGap(155))
-                                        .addGroup(gl_jpRecipe.createSequentialGroup()
-                                            .addGap(2)
-                                            .addComponent(btnStar2, GroupLayout.PREFERRED_SIZE, 41, GroupLayout.PREFERRED_SIZE)
-                                            .addPreferredGap(ComponentPlacement.RELATED)
-                                            .addComponent(btnStar3, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE)
-                                            .addPreferredGap(ComponentPlacement.RELATED)
-                                            .addComponent(btnStar4, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)
-                                            .addGap(6)
-                                            .addComponent(btnStar5, GroupLayout.PREFERRED_SIZE, 41, GroupLayout.PREFERRED_SIZE)
-                                            .addContainerGap(466, Short.MAX_VALUE))))
-                                .addGroup(gl_jpRecipe.createSequentialGroup()
-                                    .addComponent(textRecipeSelected, GroupLayout.PREFERRED_SIZE, 309, GroupLayout.PREFERRED_SIZE)
-                                    .addContainerGap(497, Short.MAX_VALUE))))))
-        );
-        gl_jpRecipe.setVerticalGroup(
-            gl_jpRecipe.createParallelGroup(Alignment.LEADING)
-                .addGroup(gl_jpRecipe.createSequentialGroup()
-                    .addContainerGap()
-                    .addGroup(gl_jpRecipe.createParallelGroup(Alignment.LEADING)
-                        .addGroup(gl_jpRecipe.createSequentialGroup()
-                            .addComponent(jpNutritionFacts, GroupLayout.PREFERRED_SIZE, 310, GroupLayout.PREFERRED_SIZE)
-                            .addGap(18)
-                            .addComponent(scrollPane_1, GroupLayout.PREFERRED_SIZE, 303, GroupLayout.PREFERRED_SIZE))
-                        .addGroup(gl_jpRecipe.createSequentialGroup()
-                            .addGroup(gl_jpRecipe.createParallelGroup(Alignment.TRAILING)
-                                .addGroup(gl_jpRecipe.createSequentialGroup()
-                                    .addGroup(gl_jpRecipe.createParallelGroup(Alignment.BASELINE)
-                                        .addComponent(textRecipeSelected, GroupLayout.PREFERRED_SIZE, 29, GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(lblRecipe))
-                                    .addGap(18))
-                                .addGroup(gl_jpRecipe.createSequentialGroup()
-                                    .addComponent(lblContributor)
-                                    .addPreferredGap(ComponentPlacement.RELATED)))
-                            .addGroup(gl_jpRecipe.createParallelGroup(Alignment.TRAILING)
-                                .addComponent(btnStar5, GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE)
-                                .addGroup(gl_jpRecipe.createSequentialGroup()
-                                    .addGroup(gl_jpRecipe.createParallelGroup(Alignment.BASELINE)
-                                        .addComponent(textCourse, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(lblCourse, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(lblPrepTime)
-                                        .addComponent(textPrepTime, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(txtContributor, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                                    .addPreferredGap(ComponentPlacement.RELATED)
-                                    .addGroup(gl_jpRecipe.createParallelGroup(Alignment.TRAILING)
-                                        .addGroup(gl_jpRecipe.createParallelGroup(Alignment.BASELINE)
-                                            .addComponent(textCusine, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(lblCookTime)
-                                            .addComponent(textCookTime, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(lblNewLabel_3))
-                                        .addComponent(lblSource))
-                                    .addPreferredGap(ComponentPlacement.RELATED)
-                                    .addGroup(gl_jpRecipe.createParallelGroup(Alignment.BASELINE)
-                                        .addComponent(textDiffcuilty, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(lblTotalTime)
-                                        .addComponent(textTotalTime, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(lblNewLabel_4)
-                                        .addComponent(txtSource, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                                    .addGap(14)
-                                    .addGroup(gl_jpRecipe.createParallelGroup(Alignment.TRAILING)
-                                        .addComponent(btnStar1, GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE)
-                                        .addGroup(gl_jpRecipe.createParallelGroup(Alignment.BASELINE)
-                                            .addComponent(lblSettings)
-                                            .addComponent(comboBoxServings, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(lblPersionalRating))
-                                        .addComponent(btnStar2, GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(btnStar3, GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(btnStar4, GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE))))
-                            .addGap(43)
-                            .addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 415, GroupLayout.PREFERRED_SIZE)))
-                    .addGap(110))
-        );
+                                                .addGroup(gl_jpRecipe
+                                                        .createParallelGroup(Alignment.BASELINE)
+                                                        .addComponent(textCourse,
+                                                                GroupLayout.PREFERRED_SIZE,
+                                                                GroupLayout.DEFAULT_SIZE,
+                                                                GroupLayout.PREFERRED_SIZE)
+                                                        .addComponent(lblCourse,
+                                                                GroupLayout.PREFERRED_SIZE, 14,
+                                                                GroupLayout.PREFERRED_SIZE)
+                                                        .addComponent(lblPrepTime)
+                                                        .addComponent(textPrepTime,
+                                                                GroupLayout.PREFERRED_SIZE,
+                                                                GroupLayout.DEFAULT_SIZE,
+                                                                GroupLayout.PREFERRED_SIZE)
+                                                        .addComponent(txtContributor,
+                                                                GroupLayout.PREFERRED_SIZE,
+                                                                GroupLayout.DEFAULT_SIZE,
+                                                                GroupLayout.PREFERRED_SIZE))
+                                                .addPreferredGap(ComponentPlacement.RELATED)
+                                                .addGroup(gl_jpRecipe
+                                                        .createParallelGroup(Alignment.TRAILING)
+                                                        .addGroup(gl_jpRecipe
+                                                                .createParallelGroup(
+                                                                        Alignment.BASELINE)
+                                                                .addComponent(textCusine,
+                                                                        GroupLayout.PREFERRED_SIZE,
+                                                                        GroupLayout.DEFAULT_SIZE,
+                                                                        GroupLayout.PREFERRED_SIZE)
+                                                                .addComponent(lblCookTime)
+                                                                .addComponent(textCookTime,
+                                                                        GroupLayout.PREFERRED_SIZE,
+                                                                        GroupLayout.DEFAULT_SIZE,
+                                                                        GroupLayout.PREFERRED_SIZE)
+                                                                .addComponent(lblNewLabel_3))
+                                                        .addComponent(lblSource))
+                                                .addPreferredGap(ComponentPlacement.RELATED)
+                                                .addGroup(gl_jpRecipe
+                                                        .createParallelGroup(Alignment.BASELINE)
+                                                        .addComponent(textDiffcuilty,
+                                                                GroupLayout.PREFERRED_SIZE,
+                                                                GroupLayout.DEFAULT_SIZE,
+                                                                GroupLayout.PREFERRED_SIZE)
+                                                        .addComponent(lblTotalTime)
+                                                        .addComponent(textTotalTime,
+                                                                GroupLayout.PREFERRED_SIZE,
+                                                                GroupLayout.DEFAULT_SIZE,
+                                                                GroupLayout.PREFERRED_SIZE)
+                                                        .addComponent(lblNewLabel_4)
+                                                        .addComponent(txtSource,
+                                                                GroupLayout.PREFERRED_SIZE,
+                                                                GroupLayout.DEFAULT_SIZE,
+                                                                GroupLayout.PREFERRED_SIZE))
+                                                .addGap(14)
+                                                .addGroup(gl_jpRecipe
+                                                        .createParallelGroup(Alignment.TRAILING)
+                                                        .addComponent(btnStar1,
+                                                                GroupLayout.PREFERRED_SIZE, 32,
+                                                                GroupLayout.PREFERRED_SIZE)
+                                                        .addGroup(gl_jpRecipe
+                                                                .createParallelGroup(
+                                                                        Alignment.BASELINE)
+                                                                .addComponent(lblSettings)
+                                                                .addComponent(comboBoxServings,
+                                                                        GroupLayout.PREFERRED_SIZE,
+                                                                        GroupLayout.DEFAULT_SIZE,
+                                                                        GroupLayout.PREFERRED_SIZE)
+                                                                .addComponent(lblPersionalRating))
+                                                        .addComponent(btnStar2,
+                                                                GroupLayout.PREFERRED_SIZE, 32,
+                                                                GroupLayout.PREFERRED_SIZE)
+                                                        .addComponent(btnStar3,
+                                                                GroupLayout.PREFERRED_SIZE, 32,
+                                                                GroupLayout.PREFERRED_SIZE)
+                                                        .addComponent(btnStar4,
+                                                                GroupLayout.PREFERRED_SIZE, 32,
+                                                                GroupLayout.PREFERRED_SIZE))))
+                                .addGap(43).addComponent(scrollPane, GroupLayout.PREFERRED_SIZE,
+                                        415, GroupLayout.PREFERRED_SIZE)))
+                        .addGap(110)));
                         
         JTextPane txtpnIngredients = new JTextPane();
         txtpnIngredients.setEditable(false);
@@ -574,124 +685,186 @@ public class UpdatedGui {
         lblServingSizeValue = new JLabel("g");
         
         GroupLayout gl_jpNutritionFacts = new GroupLayout(jpNutritionFacts);
-        gl_jpNutritionFacts.setHorizontalGroup(
-            gl_jpNutritionFacts.createParallelGroup(Alignment.LEADING)
+        gl_jpNutritionFacts.setHorizontalGroup(gl_jpNutritionFacts
+                .createParallelGroup(Alignment.LEADING)
                 .addGroup(gl_jpNutritionFacts.createSequentialGroup()
-                    .addGroup(gl_jpNutritionFacts.createParallelGroup(Alignment.LEADING)
-                        .addComponent(txtpnNutritionFacts, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                        .addGroup(gl_jpNutritionFacts.createSequentialGroup()
-                            .addComponent(txtpnTest, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(ComponentPlacement.RELATED)
-                            .addComponent(lblServingSizeValue, GroupLayout.PREFERRED_SIZE, 6, GroupLayout.PREFERRED_SIZE))
-                        .addGroup(gl_jpNutritionFacts.createSequentialGroup()
-                            .addComponent(lblCalories)
-                            .addPreferredGap(ComponentPlacement.RELATED)
-                            .addComponent(lblCaloriesValue, GroupLayout.PREFERRED_SIZE, 6, GroupLayout.PREFERRED_SIZE))
-                        .addGroup(gl_jpNutritionFacts.createSequentialGroup()
-                            .addComponent(txtpnTotalFat, GroupLayout.PREFERRED_SIZE, 63, GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(ComponentPlacement.RELATED, 113, Short.MAX_VALUE)
-                            .addComponent(lblTotalFatvaule))
-                        .addGroup(gl_jpNutritionFacts.createSequentialGroup()
-                            .addContainerGap()
-                            .addComponent(txtpnSaturatedFat, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(ComponentPlacement.RELATED, 104, Short.MAX_VALUE)
-                            .addComponent(lblSaturatedFatValue))
-                        .addGroup(gl_jpNutritionFacts.createSequentialGroup()
-                            .addContainerGap()
-                            .addComponent(lblPolyFat)
-                            .addPreferredGap(ComponentPlacement.RELATED, 125, Short.MAX_VALUE)
-                            .addComponent(lblPolyFatValue, GroupLayout.PREFERRED_SIZE, 5, GroupLayout.PREFERRED_SIZE))
-                        .addGroup(gl_jpNutritionFacts.createSequentialGroup()
-                            .addComponent(txtpnSodium, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(ComponentPlacement.RELATED, 128, Short.MAX_VALUE)
-                            .addComponent(lblSodiumValue, GroupLayout.PREFERRED_SIZE, 6, GroupLayout.PREFERRED_SIZE))
-                        .addGroup(gl_jpNutritionFacts.createSequentialGroup()
-                            .addComponent(txtpnTotalCarbohydrate, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(ComponentPlacement.RELATED, 60, Short.MAX_VALUE)
-                            .addComponent(lblTotalCarbohydrateValue, GroupLayout.PREFERRED_SIZE, 6, GroupLayout.PREFERRED_SIZE))
-                        .addGroup(gl_jpNutritionFacts.createSequentialGroup()
-                            .addContainerGap()
-                            .addComponent(txtpnDietaryFiber, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(ComponentPlacement.RELATED, 106, Short.MAX_VALUE)
-                            .addComponent(lblDietaryFiberValue, GroupLayout.PREFERRED_SIZE, 5, GroupLayout.PREFERRED_SIZE))
-                        .addGroup(gl_jpNutritionFacts.createSequentialGroup()
-                            .addContainerGap()
-                            .addComponent(txtpnTransFat, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(ComponentPlacement.RELATED, 121, Short.MAX_VALUE)
-                            .addComponent(lblTransFatValue, GroupLayout.PREFERRED_SIZE, 5, GroupLayout.PREFERRED_SIZE))
-                        .addGroup(gl_jpNutritionFacts.createSequentialGroup()
-                            .addComponent(txtpnCholesterol, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(ComponentPlacement.RELATED, 106, Short.MAX_VALUE)
-                            .addComponent(lblCholesterolValue, GroupLayout.PREFERRED_SIZE, 6, GroupLayout.PREFERRED_SIZE))
-                        .addGroup(gl_jpNutritionFacts.createSequentialGroup()
-                            .addContainerGap()
-                            .addComponent(lblProtien, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(ComponentPlacement.RELATED, 119, Short.MAX_VALUE)
-                            .addComponent(lblProtienValues, GroupLayout.PREFERRED_SIZE, 6, GroupLayout.PREFERRED_SIZE))
-                        .addGroup(gl_jpNutritionFacts.createSequentialGroup()
-                            .addContainerGap()
-                            .addComponent(txtpnSugars, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(ComponentPlacement.RELATED, 133, Short.MAX_VALUE)
-                            .addComponent(lblSugarsValue, GroupLayout.PREFERRED_SIZE, 5, GroupLayout.PREFERRED_SIZE)))
-                    .addContainerGap())
-        );
-        gl_jpNutritionFacts.setVerticalGroup(
-            gl_jpNutritionFacts.createParallelGroup(Alignment.LEADING)
+                        .addGroup(gl_jpNutritionFacts.createParallelGroup(Alignment.LEADING)
+                                .addComponent(txtpnNutritionFacts, GroupLayout.PREFERRED_SIZE,
+                                        GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                .addGroup(gl_jpNutritionFacts.createSequentialGroup()
+                                        .addComponent(txtpnTest, GroupLayout.PREFERRED_SIZE,
+                                                GroupLayout.DEFAULT_SIZE,
+                                                GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(ComponentPlacement.RELATED).addComponent(
+                                                lblServingSizeValue, GroupLayout.PREFERRED_SIZE, 6,
+                                                GroupLayout.PREFERRED_SIZE))
+                                .addGroup(gl_jpNutritionFacts.createSequentialGroup()
+                                        .addComponent(lblCalories)
+                                        .addPreferredGap(ComponentPlacement.RELATED)
+                                        .addComponent(lblCaloriesValue, GroupLayout.PREFERRED_SIZE,
+                                                6, GroupLayout.PREFERRED_SIZE))
+                                .addGroup(gl_jpNutritionFacts.createSequentialGroup()
+                                        .addComponent(txtpnTotalFat, GroupLayout.PREFERRED_SIZE, 63,
+                                                GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(ComponentPlacement.RELATED, 113,
+                                                Short.MAX_VALUE)
+                                        .addComponent(lblTotalFatvaule))
+                                .addGroup(gl_jpNutritionFacts.createSequentialGroup()
+                                        .addContainerGap()
+                                        .addComponent(txtpnSaturatedFat, GroupLayout.PREFERRED_SIZE,
+                                                GroupLayout.DEFAULT_SIZE,
+                                                GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(ComponentPlacement.RELATED, 104,
+                                                Short.MAX_VALUE)
+                                        .addComponent(lblSaturatedFatValue))
+                                .addGroup(gl_jpNutritionFacts.createSequentialGroup()
+                                        .addContainerGap().addComponent(lblPolyFat)
+                                        .addPreferredGap(ComponentPlacement.RELATED, 125,
+                                                Short.MAX_VALUE)
+                                        .addComponent(lblPolyFatValue, GroupLayout.PREFERRED_SIZE,
+                                                5, GroupLayout.PREFERRED_SIZE))
+                                .addGroup(gl_jpNutritionFacts.createSequentialGroup()
+                                        .addComponent(txtpnSodium, GroupLayout.PREFERRED_SIZE,
+                                                GroupLayout.DEFAULT_SIZE,
+                                                GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(ComponentPlacement.RELATED, 128,
+                                                Short.MAX_VALUE)
+                                        .addComponent(lblSodiumValue, GroupLayout.PREFERRED_SIZE, 6,
+                                                GroupLayout.PREFERRED_SIZE))
+                                .addGroup(gl_jpNutritionFacts.createSequentialGroup()
+                                        .addComponent(txtpnTotalCarbohydrate,
+                                                GroupLayout.PREFERRED_SIZE,
+                                                GroupLayout.DEFAULT_SIZE,
+                                                GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(ComponentPlacement.RELATED, 60,
+                                                Short.MAX_VALUE)
+                                        .addComponent(lblTotalCarbohydrateValue,
+                                                GroupLayout.PREFERRED_SIZE, 6,
+                                                GroupLayout.PREFERRED_SIZE))
+                                .addGroup(gl_jpNutritionFacts.createSequentialGroup()
+                                        .addContainerGap()
+                                        .addComponent(txtpnDietaryFiber, GroupLayout.PREFERRED_SIZE,
+                                                GroupLayout.DEFAULT_SIZE,
+                                                GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(ComponentPlacement.RELATED, 106,
+                                                Short.MAX_VALUE)
+                                        .addComponent(lblDietaryFiberValue,
+                                                GroupLayout.PREFERRED_SIZE, 5,
+                                                GroupLayout.PREFERRED_SIZE))
+                                .addGroup(gl_jpNutritionFacts.createSequentialGroup()
+                                        .addContainerGap()
+                                        .addComponent(txtpnTransFat, GroupLayout.PREFERRED_SIZE,
+                                                GroupLayout.DEFAULT_SIZE,
+                                                GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(ComponentPlacement.RELATED, 121,
+                                                Short.MAX_VALUE)
+                                        .addComponent(lblTransFatValue, GroupLayout.PREFERRED_SIZE,
+                                                5, GroupLayout.PREFERRED_SIZE))
+                                .addGroup(gl_jpNutritionFacts.createSequentialGroup()
+                                        .addComponent(txtpnCholesterol, GroupLayout.PREFERRED_SIZE,
+                                                GroupLayout.DEFAULT_SIZE,
+                                                GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(ComponentPlacement.RELATED, 106,
+                                                Short.MAX_VALUE)
+                                        .addComponent(lblCholesterolValue,
+                                                GroupLayout.PREFERRED_SIZE, 6,
+                                                GroupLayout.PREFERRED_SIZE))
+                                .addGroup(gl_jpNutritionFacts.createSequentialGroup()
+                                        .addContainerGap()
+                                        .addComponent(lblProtien, GroupLayout.PREFERRED_SIZE,
+                                                GroupLayout.DEFAULT_SIZE,
+                                                GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(ComponentPlacement.RELATED, 119,
+                                                Short.MAX_VALUE)
+                                        .addComponent(lblProtienValues, GroupLayout.PREFERRED_SIZE,
+                                                6, GroupLayout.PREFERRED_SIZE))
+                                .addGroup(gl_jpNutritionFacts.createSequentialGroup()
+                                        .addContainerGap()
+                                        .addComponent(txtpnSugars, GroupLayout.PREFERRED_SIZE,
+                                                GroupLayout.DEFAULT_SIZE,
+                                                GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(ComponentPlacement.RELATED, 133,
+                                                Short.MAX_VALUE)
+                                        .addComponent(lblSugarsValue, GroupLayout.PREFERRED_SIZE, 5,
+                                                GroupLayout.PREFERRED_SIZE)))
+                        .addContainerGap()));
+        gl_jpNutritionFacts.setVerticalGroup(gl_jpNutritionFacts
+                .createParallelGroup(Alignment.LEADING)
                 .addGroup(gl_jpNutritionFacts.createSequentialGroup()
-                    .addComponent(txtpnNutritionFacts, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                    .addPreferredGap(ComponentPlacement.RELATED)
-                    .addGroup(gl_jpNutritionFacts.createParallelGroup(Alignment.LEADING)
-                        .addGroup(gl_jpNutritionFacts.createSequentialGroup()
-                            .addComponent(txtpnTest, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(ComponentPlacement.RELATED)
-                            .addGroup(gl_jpNutritionFacts.createParallelGroup(Alignment.BASELINE)
-                                .addComponent(lblCalories)
-                                .addComponent(lblCaloriesValue)))
-                        .addComponent(lblServingSizeValue))
-                    .addPreferredGap(ComponentPlacement.RELATED)
-                    .addGroup(gl_jpNutritionFacts.createParallelGroup(Alignment.LEADING)
-                        .addGroup(gl_jpNutritionFacts.createSequentialGroup()
-                            .addComponent(txtpnTotalFat, GroupLayout.PREFERRED_SIZE, 15, GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(ComponentPlacement.RELATED)
-                            .addComponent(txtpnSaturatedFat, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                            .addGap(2)
-                            .addGroup(gl_jpNutritionFacts.createParallelGroup(Alignment.BASELINE)
-                                .addComponent(lblPolyFat)
-                                .addComponent(lblPolyFatValue, GroupLayout.PREFERRED_SIZE, 11, GroupLayout.PREFERRED_SIZE)))
-                        .addGroup(gl_jpNutritionFacts.createSequentialGroup()
-                            .addComponent(lblTotalFatvaule)
-                            .addPreferredGap(ComponentPlacement.RELATED)
-                            .addComponent(lblSaturatedFatValue)))
-                    .addPreferredGap(ComponentPlacement.RELATED)
-                    .addGroup(gl_jpNutritionFacts.createParallelGroup(Alignment.TRAILING)
-                        .addComponent(txtpnTransFat, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                        .addComponent(lblTransFatValue, GroupLayout.PREFERRED_SIZE, 11, GroupLayout.PREFERRED_SIZE))
-                    .addPreferredGap(ComponentPlacement.RELATED)
-                    .addGroup(gl_jpNutritionFacts.createParallelGroup(Alignment.TRAILING)
-                        .addComponent(lblCholesterolValue)
-                        .addComponent(txtpnCholesterol, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                    .addPreferredGap(ComponentPlacement.RELATED)
-                    .addGroup(gl_jpNutritionFacts.createParallelGroup(Alignment.TRAILING)
-                        .addComponent(lblSodiumValue)
-                        .addComponent(txtpnSodium, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                    .addPreferredGap(ComponentPlacement.RELATED)
-                    .addGroup(gl_jpNutritionFacts.createParallelGroup(Alignment.LEADING)
-                        .addComponent(lblTotalCarbohydrateValue, Alignment.TRAILING)
-                        .addComponent(txtpnTotalCarbohydrate, Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-                    .addPreferredGap(ComponentPlacement.RELATED)
-                    .addGroup(gl_jpNutritionFacts.createParallelGroup(Alignment.LEADING)
-                        .addComponent(txtpnDietaryFiber, Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                        .addComponent(lblDietaryFiberValue, Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, 11, GroupLayout.PREFERRED_SIZE))
-                    .addPreferredGap(ComponentPlacement.RELATED)
-                    .addGroup(gl_jpNutritionFacts.createParallelGroup(Alignment.TRAILING)
-                        .addComponent(txtpnSugars, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                        .addComponent(lblSugarsValue, GroupLayout.PREFERRED_SIZE, 11, GroupLayout.PREFERRED_SIZE))
-                    .addPreferredGap(ComponentPlacement.RELATED)
-                    .addGroup(gl_jpNutritionFacts.createParallelGroup(Alignment.TRAILING)
-                        .addComponent(lblProtien, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                        .addComponent(lblProtienValues))
-                    .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+                        .addComponent(txtpnNutritionFacts, GroupLayout.PREFERRED_SIZE,
+                                GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(ComponentPlacement.RELATED)
+                        .addGroup(gl_jpNutritionFacts.createParallelGroup(Alignment.LEADING)
+                                .addGroup(gl_jpNutritionFacts.createSequentialGroup()
+                                        .addComponent(txtpnTest, GroupLayout.PREFERRED_SIZE,
+                                                GroupLayout.DEFAULT_SIZE,
+                                                GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(ComponentPlacement.RELATED)
+                                        .addGroup(gl_jpNutritionFacts
+                                                .createParallelGroup(Alignment.BASELINE)
+                                                .addComponent(lblCalories)
+                                                .addComponent(lblCaloriesValue)))
+                                .addComponent(lblServingSizeValue))
+                        .addPreferredGap(ComponentPlacement.RELATED)
+                        .addGroup(gl_jpNutritionFacts.createParallelGroup(Alignment.LEADING)
+                                .addGroup(gl_jpNutritionFacts.createSequentialGroup()
+                                        .addComponent(txtpnTotalFat, GroupLayout.PREFERRED_SIZE, 15,
+                                                GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(ComponentPlacement.RELATED)
+                                        .addComponent(txtpnSaturatedFat, GroupLayout.PREFERRED_SIZE,
+                                                GroupLayout.DEFAULT_SIZE,
+                                                GroupLayout.PREFERRED_SIZE)
+                                        .addGap(2)
+                                        .addGroup(gl_jpNutritionFacts
+                                                .createParallelGroup(Alignment.BASELINE)
+                                                .addComponent(lblPolyFat).addComponent(
+                                                        lblPolyFatValue, GroupLayout.PREFERRED_SIZE,
+                                                        11, GroupLayout.PREFERRED_SIZE)))
+                                .addGroup(gl_jpNutritionFacts.createSequentialGroup()
+                                        .addComponent(lblTotalFatvaule)
+                                        .addPreferredGap(ComponentPlacement.RELATED)
+                                        .addComponent(lblSaturatedFatValue)))
+                        .addPreferredGap(ComponentPlacement.RELATED)
+                        .addGroup(gl_jpNutritionFacts.createParallelGroup(Alignment.TRAILING)
+                                .addComponent(txtpnTransFat, GroupLayout.PREFERRED_SIZE,
+                                        GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(lblTransFatValue, GroupLayout.PREFERRED_SIZE, 11,
+                                        GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(ComponentPlacement.RELATED)
+                        .addGroup(gl_jpNutritionFacts.createParallelGroup(Alignment.TRAILING)
+                                .addComponent(lblCholesterolValue).addComponent(txtpnCholesterol,
+                                        GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+                                        GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(ComponentPlacement.RELATED)
+                        .addGroup(gl_jpNutritionFacts.createParallelGroup(Alignment.TRAILING)
+                                .addComponent(lblSodiumValue).addComponent(txtpnSodium,
+                                        GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+                                        GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(ComponentPlacement.RELATED)
+                        .addGroup(gl_jpNutritionFacts.createParallelGroup(Alignment.LEADING)
+                                .addComponent(lblTotalCarbohydrateValue, Alignment.TRAILING)
+                                .addComponent(txtpnTotalCarbohydrate, Alignment.TRAILING,
+                                        GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+                                        GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(ComponentPlacement.RELATED)
+                        .addGroup(gl_jpNutritionFacts.createParallelGroup(Alignment.LEADING)
+                                .addComponent(txtpnDietaryFiber, Alignment.TRAILING,
+                                        GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
+                                        GroupLayout.PREFERRED_SIZE)
+                                .addComponent(lblDietaryFiberValue, Alignment.TRAILING,
+                                        GroupLayout.PREFERRED_SIZE, 11, GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(ComponentPlacement.RELATED)
+                        .addGroup(gl_jpNutritionFacts.createParallelGroup(Alignment.TRAILING)
+                                .addComponent(txtpnSugars, GroupLayout.PREFERRED_SIZE,
+                                        GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(lblSugarsValue, GroupLayout.PREFERRED_SIZE, 11,
+                                        GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(ComponentPlacement.RELATED)
+                        .addGroup(gl_jpNutritionFacts.createParallelGroup(Alignment.TRAILING)
+                                .addComponent(lblProtien, GroupLayout.PREFERRED_SIZE,
+                                        GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                .addComponent(lblProtienValues))
+                        .addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)));
         jpNutritionFacts.setLayout(gl_jpNutritionFacts);
         jpRecipe.setLayout(gl_jpRecipe);
         frame.getContentPane().setLayout(groupLayout);
@@ -700,8 +873,9 @@ public class UpdatedGui {
         
         jpImport = new JPanel();
         jpContent.add(jpImport, "name_625307882240");
-        jpImport.setLayout(new MigLayout("", "[71px,grow]", "[14px][14px][][23px][14px][23px][][][][][][][][][]"));
-        
+        jpImport.setLayout(new MigLayout("", "[71px,grow]",
+                "[14px][14px][][23px][14px][23px][][][][][][][][][]"));
+                
         JLabel lblImport = new JLabel("Import");
         lblImport.setFont(new Font("Tahoma", Font.PLAIN, 12));
         jpImport.add(lblImport, "cell 0 2,alignx left,aligny top");
@@ -712,7 +886,7 @@ public class UpdatedGui {
         txtImportStatus.setColumns(10);
         
         JButton btnImportBrowse = new JButton("Browse");
-       
+        
         jpImport.add(btnImportBrowse, "cell 0 4,alignx left,aligny top");
         
         JLabel lblExport = new JLabel("Export ");
@@ -725,31 +899,31 @@ public class UpdatedGui {
         jpImport.add(txtExportStatus, "cell 0 13,growx");
         
         JButton btnExportBrowse = new JButton("Browse");
-
+        
         jpImport.add(btnExportBrowse, "cell 0 14");
         
         importActionListner(btnImportBrowse, btnExportBrowse);
-        btnMenuActionListners(btnAdvancedSearch, btnNewIngredient, btnImport, btnSearch, btnRandomRecipe, btnMyFavroates, btnNewRecipe, btnRemoveIngredient);
-        
+        btnMenuActionListners(btnAdvancedSearch, btnNewIngredient, btnImport, btnSearch,
+                btnRandomRecipe, btnMyFavroates, btnNewRecipe, btnRemoveIngredient);
                 
     }
-
+    
     private void displayRecipeScreen() {
         jpWelcome.setVisible(false);
         jpRecipe.setVisible(true);
         btnNewIngredient.setVisible(true);
-        jpImport.setVisible(false);   
+        jpImport.setVisible(false);
         
     }
     
     /**
      * 
      */
-    private void displayImportScreen(){
+    private void displayImportScreen() {
         jpWelcome.setVisible(false);
         jpRecipe.setVisible(false);
         btnNewIngredient.setVisible(false);
-        jpImport.setVisible(true); 
+        jpImport.setVisible(true);
         
     }
     
@@ -764,9 +938,8 @@ public class UpdatedGui {
      * @param btnRemoveIngredient
      */
     private void btnMenuActionListners(JButton btnAdvancedSearch, JButton btnNewIngredient,
-            JButton btnImport, JButton btnSearch, JButton btnRandomRecipe,
-            JButton btnMyFavroates, JButton btnNewRecipe, JButton btnRemoveIngredient) 
-    {
+            JButton btnImport, JButton btnSearch, JButton btnRandomRecipe, JButton btnMyFavroates,
+            JButton btnNewRecipe, JButton btnRemoveIngredient) {
         btnAdvancedSearch.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
             }
@@ -802,7 +975,7 @@ public class UpdatedGui {
         
         btnNewRecipe.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                displayRecipeScreen();  
+                displayRecipeScreen();
             }
         });
         
@@ -811,9 +984,8 @@ public class UpdatedGui {
             }
         });
         
-
     }
-
+    
     /**
      * @param btnImportBrowse
      */
@@ -824,7 +996,7 @@ public class UpdatedGui {
                 fileChooser.setCurrentDirectory(new File(System.getProperty("user.home")));
                 int result = fileChooser.showOpenDialog(jpImport);
                 if (result == JFileChooser.APPROVE_OPTION) {
-                    File selectedFile = fileChooser.getSelectedFile();                   
+                    File selectedFile = fileChooser.getSelectedFile();
                     txtImportStatus.setText("Selected file: " + selectedFile.getAbsolutePath());
                 }
                 
@@ -836,9 +1008,10 @@ public class UpdatedGui {
             }
         });
     }
-
+    
     /**
-     * Action listeners for rating buttons 
+     * Action listeners for rating buttons
+     * 
      * @param btnStar1
      * @param btnStar2
      * @param btnStar3
@@ -898,12 +1071,10 @@ public class UpdatedGui {
         });
     }
     
-    
     /**
-     * Populates Nutrition Facts Label 
+     * Populates Nutrition Facts Label
      */
-    public void populateNutritionFacts()
-    {
+    public void populateNutritionFacts() {
         lblServingSizeValue.setText(servingSize + "g");
         lblCaloriesValue.setText(calories + "g");
         lblTotalFatvaule.setText(totalFat + "g");
@@ -911,16 +1082,14 @@ public class UpdatedGui {
         lblPolyFatValue.setText(polyFat + "g");
         lblTransFatValue.setText(transFat + "g");
         lblCholesterolValue.setText(cholesterol + "g");
-        lblSodiumValue.setText(sodium +"g");
+        lblSodiumValue.setText(sodium + "g");
         lblTotalCarbohydrateValue.setText(totalCarbohydrate + "g");
-        lblDietaryFiberValue.setText( dietaryFiber + "g");
+        lblDietaryFiberValue.setText(dietaryFiber + "g");
         lblSugarsValue.setText(sugars + "g");
         lblProtienValues.setText(protien + "g");
     }
     
-    
-    protected void simpleSerch()
-    {
+    protected void simpleSerch() {
         txtSearch.getText();
         
     }
