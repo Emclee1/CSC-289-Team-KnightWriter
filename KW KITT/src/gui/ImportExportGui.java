@@ -8,6 +8,8 @@ import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
 import javax.swing.Box;
@@ -17,6 +19,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -26,6 +29,7 @@ import javax.swing.border.BevelBorder;
 import javax.swing.border.SoftBevelBorder;
 import javax.swing.border.TitledBorder;
 
+import kitt.ImportExport;
 import net.miginfocom.swing.MigLayout;
 
 public class ImportExportGui  implements ItemListener
@@ -124,9 +128,29 @@ public class ImportExportGui  implements ItemListener
 	    jpMenu.add(btnNewButton_4, "cell 0 12,growx");
 	    
 	    JButton btnNewButton_5 = new JButton("Import");
+	    btnNewButton_5.addMouseListener(new MouseAdapter() {
+	    	@Override
+	    	public void mouseClicked(MouseEvent arg0) 
+	    	{
+	    		ImportGui imp = new ImportGui();
+	    		frame.setVisible( false );
+	    		imp.frame.setVisible( true );;
+	    		System.out.println( "Changed to import" );
+	    	}
+	    });
 	    jpMenu.add(btnNewButton_5, "cell 0 15,growx");
 	    
 	    JButton btnNewButton_6 = new JButton("Export");
+	    btnNewButton_6.addMouseListener(new MouseAdapter() {
+	    	@Override
+	    	public void mouseClicked(MouseEvent e)
+	    	{
+	    		ExportGui export = new ExportGui();
+	    		frame .setVisible( false );
+	    		export.frame.setVisible( true );;
+	    		System.out.println( "Changed to export" );
+	    	}
+	    });
 	    jpMenu.add(btnNewButton_6, "cell 0 16,growx");
 	    
 	    JButton btnHelp = new JButton("Help");
@@ -207,7 +231,7 @@ public class ImportExportGui  implements ItemListener
     
     protected JLabel addLabel()
     {
-    	return new JLabel();
+    	return new JLabel( "ImportExport Default, Does nothing" );
     }
     
 	@Override
@@ -227,5 +251,97 @@ public class ImportExportGui  implements ItemListener
 				boxSel.set(index,false);
 			}
 		}
+	}
+}
+
+class ExportGui  extends ImportExportGui
+{	
+	public ExportGui()
+	{
+		initialize();
+	}
+	
+	public static void main(String[] args) 
+    {
+        EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                try {
+                    ExportGui window = new ExportGui();
+                    window.frame.setVisible(true);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+	
+	protected JLabel addLabel()
+    {
+    	return new JLabel("Export");
+    }
+	
+	protected String[] getData( JButton btnConfirm )
+	{
+		ImportExport export = new ImportExport();
+	    String[] text = export.getExportList().split( "\r\n" );
+	    
+	    btnConfirm.addMouseListener
+	    (
+	    		new MouseAdapter() {
+	    			@Override
+	    			public void mouseClicked(MouseEvent arg0)
+	    			{
+	    				ImportExport.exportData( boxSel );
+	    				JOptionPane.showMessageDialog( frame, "Recipes and Ingredients successfully exported.");
+	    			}
+	    });
+	    
+	    return text;
+	}
+}
+
+class ImportGui extends ImportExportGui
+{
+    public ImportGui()
+	{
+		initialize();
+	}
+	
+	public static void main(String[] args) 
+    {
+        EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                try {
+                    ImportGui window = new ImportGui();
+                    window.frame.setVisible(true);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+	
+	protected JLabel addLabel()
+    {
+    	return new JLabel("Import");
+    }
+	
+	protected String[] getData( JButton btnConfirm )
+	{
+		 ImportExport imp = new ImportExport();
+		 String[] text = imp.getImportList().split( "\n" );
+	    
+		 btnConfirm.addMouseListener
+		    (
+		    		new MouseAdapter() {
+		    			@Override
+		    			public void mouseClicked(MouseEvent arg0)
+		    			{
+		    				ImportExport.importData( boxSel );
+		    				JOptionPane.showMessageDialog( frame, "Recipes and Ingredients successfully imported.");
+		    			}
+		    });
+	    
+	    return text;
 	}
 }
