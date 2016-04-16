@@ -29,13 +29,14 @@ public class DataBaseMgt {
         
         loadDataBase();
         
-        getIngredients(1000);
+        System.out.println(getIngredientId(1000));
         
-        System.out.println("" + getRecId(recId) + " " + getRecName(recId) + " "
-                + getDifficulty(recId) + " " + getPrepTime(recId) + " " + getCookTime(recId) + " "
-                + getTotalTime(recId) + " " + getServings(recId) + " " + getPersonalRating(recId)
-                + " " + getCourse(recId) + " " + getInstructions(recId) + " "
-                + getContributor(recId) + " " + getSource(recId));
+        
+//        System.out.println("" + getRecId(recId) + " " + getRecName(recId) + " "
+//                + getDifficulty(recId) + " " + getPrepTime(recId) + " " + getCookTime(recId) + " "
+//                + getTotalTime(recId) + " " + getServings(recId) + " " + getPersonalRating(recId)
+//                + " " + getCourse(recId) + " " + getInstructions(recId) + " "
+//                + getContributor(recId) + " " + getSource(recId));
                 
         connection.commit();
         connection.close();
@@ -250,25 +251,35 @@ public class DataBaseMgt {
     
     
     
-    public static void getIngredients(int recId) throws SQLException
+    public static ArrayList<Integer> getIngredientId(int recId) throws SQLException
     {
-    ArrayList ingredients = null;
-    
-    try {
-        String statement1 = String.format("SELECT * FROM Ing_Line WHERE rec_ID = %d", 1001 ) ;//Creates sql statement
-        ResultSet ingList = statement.executeQuery( statement1 );//Will return every associated ingredient row
+        String resultString = null;
+        ResultSet result = null;
+        ArrayList<Integer> resultArray = new ArrayList<Integer>();
+        
 
         
+        // while (result.next()) {
+        // id = result.getInt("rec_ID");
+        // }
+        try {
+            // result = statement.executeQuery("SELECT * FROM Recipe WHERE
+            // rec_ID = " + id);
+            result = statement.executeQuery("SELECT * FROM ing_Line WHERE rec_ID = " + recId);
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+            System.out.println("Execute Query Error");
+        }
         
+        while (result.next()) {
+            resultArray.add(result.getInt("ing_ID"));
+            
+        }
         
-    } catch (SQLException e) {
-        // TODO Auto-generated catch block
-        e.printStackTrace();
-    }
-    
-    while (result.next()) {
-        System.out.println(result.getString("ine_unit"));
-    }
+        return resultArray;
+        
+     
     
     //return ingredients;
     }
@@ -283,15 +294,7 @@ public class DataBaseMgt {
         String resultString = null;
         ResultSet result = null;
         
-        try {
-            // result = statement.executeQuery("SELECT * FROM Recipe WHERE
-            // rec_ID = " + id);
-            result = statement.executeQuery("SELECT * FROM Recipe WHERE rec_ID = " + recId);
-        } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-            System.out.println("Execute Query Error");
-        }
+
         
         // while (result.next()) {
         // id = result.getInt("rec_ID");
