@@ -6,12 +6,16 @@ import java.awt.Image;
 
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 public class WelcomeGui extends KITTGUI
 {
-	public WelcomeGui()
+	public WelcomeGui(){}
+	
+	public WelcomeGui( JPanel masterPanel )
 	{
 		initialize();
+		masterPanel.add( jpPanel, "welcome");
 	}
 	
 	public static void main(String[] args) 
@@ -35,8 +39,10 @@ public class WelcomeGui extends KITTGUI
 	
 	protected void addPanelData()
 	{
+		JPanel panel = new JPanel();
+		jpPanel.add( panel );
 		JLabel lblPic = new JLabel("");
-        jpPanel.add(lblPic, BorderLayout.CENTER);
+        panel.add(lblPic, BorderLayout.CENTER);
         
         Image img;
         img = new ImageIcon( WelcomeGui.class.getResource("/food-collage.jpg") ).getImage();
