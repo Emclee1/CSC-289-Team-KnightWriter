@@ -24,23 +24,28 @@ public class DataBaseMgt {
     static Statement statement;
     static ResultSet result;
     
-    public static void main(String args[]) throws ClassNotFoundException, SQLException {
-        int recId = 1001;
-        
-        loadDataBase();
-        
-        System.out.println(getIngredientId(1000));
-        
-        
-//        System.out.println("" + getRecId(recId) + " " + getRecName(recId) + " "
-//                + getDifficulty(recId) + " " + getPrepTime(recId) + " " + getCookTime(recId) + " "
-//                + getTotalTime(recId) + " " + getServings(recId) + " " + getPersonalRating(recId)
-//                + " " + getCourse(recId) + " " + getInstructions(recId) + " "
-//                + getContributor(recId) + " " + getSource(recId));
-                
-        connection.commit();
-        connection.close();
-        
+//    public static void main(String args[]) throws ClassNotFoundException, SQLException {
+//        int recId = 1001;
+//        
+//        loadDataBase();
+//        
+//        System.out.println(getIngredients(1000));
+//        
+//        connection.commit();
+//        connection.close();
+//        
+//    }
+    
+    public DataBaseMgt(){
+        try {
+            loadDataBase();
+        } catch (ClassNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
     }
     
     /**
@@ -81,7 +86,7 @@ public class DataBaseMgt {
      * @return
      * @throws SQLException
      */
-    public static String getRecName(int recId) {
+    public static String getRecipe(int recId) {
         String recName = null;
         
         try {
@@ -93,6 +98,9 @@ public class DataBaseMgt {
         
         return recName;
     }
+    
+    
+    
     
     /**
      * @param recId
@@ -203,6 +211,17 @@ public class DataBaseMgt {
         return course;
     }
     
+    public static String getCusine(int recId) {
+        String cuisine = null;
+        try {
+            cuisine = getResult(recId, "cuisine");
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        return cuisine;
+    }
+    
     /**
      * @param recId
      * @return
@@ -248,16 +267,14 @@ public class DataBaseMgt {
         return source;
     }
     
-    
-    
-    
-    public static ArrayList<Integer> getIngredientId(int recId) throws SQLException
-    {
-        String resultString = null;
-        ResultSet result = null;
-        ArrayList<Integer> resultArray = new ArrayList<Integer>();
+    public static ArrayList<String> getIngredients(int recId) {
         
-
+        ResultSet result = null;
+        ResultSet ingredientResult = null;
+        ResultSet ing_lineResult = null;
+        
+        ArrayList<String> ingredientString = new ArrayList<String>();
+        ArrayList<Integer> ingredientID = new ArrayList<Integer>();
         
         // while (result.next()) {
         // id = result.getInt("rec_ID");
@@ -272,17 +289,39 @@ public class DataBaseMgt {
             System.out.println("Execute Query Error");
         }
         
-        while (result.next()) {
-            resultArray.add(result.getInt("ing_ID"));
-            
+        try {
+            while (result.next()) {
+                ingredientID.add(result.getInt("ing_ID"));
+                
+            }
+        } catch (SQLException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
         }
         
-        return resultArray;
+        for (int index = 0; index < ingredientID.size(); index++) {
+            try {
+                ing_lineResult = statement.executeQuery(
+                        "SELECT * FROM ing_Line WHERE (rec_ID = " + recId + " AND ing_ID = " + ingredientID.get(index) + ")");
+                ingredientResult = statement.executeQuery(
+                        "SELECT * FROM Ingredient WHERE ing_ID = " + ingredientID.get(index));
+                while (ingredientResult.next() && ing_lineResult.next()) {
+                    ingredientString.add(ing_lineResult.getString("line_quantity") 
+                            + " "
+                            + ing_lineResult.getString("line_unit") + " "
+                            + ingredientResult.getString("ing_name"));
+                }
+            } catch (SQLException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
         
-     
-    
-    //return ingredients;
+        return ingredientString;
+        
     }
+    
+    
     
     /* 
     *
@@ -293,8 +332,6 @@ public class DataBaseMgt {
     public static String getResult(int recId, String column) throws SQLException {
         String resultString = null;
         ResultSet result = null;
-        
-
         
         // while (result.next()) {
         // id = result.getInt("rec_ID");
