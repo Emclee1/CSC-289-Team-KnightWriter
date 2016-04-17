@@ -6,26 +6,20 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class ImportExport 
 {
-	static Connection con;
-	static Statement st;
 	static File csv;
 	
 	public ImportExport()
 	{
-		csv = new File( System.getProperty("user.dir") + "\\src\\data.csv" );
-		connectToDB();
+		csv = new File( System.getProperty("user.dir") + "\\data.csv" );
 	}
 	
 	public String getExportList()
@@ -35,8 +29,7 @@ public class ImportExport
 		
 		try 
 		{
-			recipes = st.executeQuery( "SELECT * FROM Recipe"
-					+ " WHERE contributor IN ('user', null)" );
+			recipes = Database.st.executeQuery( "SELECT * FROM Recipe" );
 			
 			if( !recipes.isBeforeFirst() )
 			{
@@ -45,8 +38,7 @@ public class ImportExport
 			
 			while( recipes.next() )
 			{
-				//list += "\u2022" + recipes.getString(2) + "\r\n";
-				list += recipes.getString(2) + "\r\n";
+				list += recipes.getString( 1 ) + "|" + recipes.getString( 2 ) + "\r\n";
 			}
 		} catch (SQLException e)
 		{
@@ -78,7 +70,7 @@ public class ImportExport
 				}
 				else
 				{
-					list += line.split( "\\|" )[1] + "\n" ;
+					list += line.split( "\\|" )[0] + "|" + line.split( "\\|" )[1] + "\n" ;
 				}
 			}
 			
@@ -95,31 +87,7 @@ public class ImportExport
 		return list;
 	}
 	
-	public static void connectToDB()
-	{
-		try 
-		{
-			con = DriverManager.getConnection( "jdbc:ucanaccess://" + System.getProperty("user.dir") + "\\KITT 20R.accdb" );
-			st = con.createStatement();
-		} catch (SQLException e) 
-		{
-			e.printStackTrace();
-		}
-		
-	}
-	
-	public static void closeDB()
-	{
-		try {
-			con.commit();
-			con.close();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
-	public static void importData( ArrayList<Boolean> selected )
+	public static void importData( ArrayList<Integer> recIDs )
 	{
 		BufferedReader reader;
 		
@@ -132,16 +100,16 @@ public class ImportExport
 			return;
 		}
 		
-		boolean firstln = true;
-		boolean recs = true;
 		List<String> columnsRec = new ArrayList<String>();
 		List<String> columnsIng = new ArrayList<String>();
 		ArrayList<String[]> rowsRec = new ArrayList<String[]>();
 		ArrayList<String[]> rowsIng = new ArrayList<String[]>();
-		List<Integer> ids;
+		List<Integer> newIDs;
 		
 		try 
 		{
+			boolean firstln = true;
+			boolean recs = true;
 			for( String line = reader.readLine(); line != null; line = reader.readLine() )
 			{
 				if( firstln )
@@ -172,8 +140,8 @@ public class ImportExport
 				}
 			}
 			
-			ids = importRec( columnsRec, rowsRec, rowsIng, selected );
-			importIng( ids, columnsIng, rowsIng );
+			newIDs = importRec( columnsRec, rowsRec, rowsIng, recIDs );
+			importIng( newIDs, columnsIng, rowsIng );
 			
 			reader.close();
 		} catch (SQLException e) {
@@ -185,18 +153,18 @@ public class ImportExport
 		}
 	}
 	
-	private static List<Integer> importRec( List<String> columns, ArrayList<String[]> rows, ArrayList<String[]> rowsIng, ArrayList<Boolean> selected ) throws SQLException
+	private static List<Integer> importRec( List<String> columns, ArrayList<String[]> rowsRec, ArrayList<String[]> rowsIng, ArrayList<Integer> recIDs ) throws SQLException
 	{
 		ArrayList<Integer> ids = new ArrayList<Integer>();
 		
-		for( int i = 0; i < rows.size(); i++ )
+		for( int i = 0; i < rowsRec.size(); i++ )
 		{
 			int id = getLastID() + 1;
 			for( int k = 0; k < rowsIng.size(); k++ )
 			{
-				if( rows.get(i)[0].equals( rowsIng.get(k)[0] ) )
+				if( rowsRec.get(i)[0].equals( rowsIng.get(k)[0] ) )
 				{
-					if( selected.get( i ) )
+					if( recIDs.contains( Integer.parseInt( rowsRec.get(i)[0] ) ) )
 					{
 						ids.add( id );
 					}
@@ -207,7 +175,7 @@ public class ImportExport
 				}
 			}
 			
-			if( selected.get( i ) )
+			if( recIDs.contains( Integer.parseInt( rowsRec.get(i)[0] ) ) )
 			{
 				String row = "INSERT INTO Recipe  VALUES( " + id + ",";
 						
@@ -215,22 +183,26 @@ public class ImportExport
 				{
 					try
 					{
-						int numb = Integer.parseInt( rows.get(i)[j] );
+						int numb = Integer.parseInt( rowsRec.get(i)[j] );
 						row += numb + ( (  j == columns.size() - 1 )  ? ")" : "," ) ;
 					}
 					catch( NumberFormatException e)
 					{
-						if( rows.get(i)[j].matches("null") )
+						if( rowsRec.get(i)[j].matches("null") )
 						{
-							row +=  rows.get(i)[j] + ( (  j == columns.size() - 1 )  ? ")" : "," ) ;
+							row +=  rowsRec.get(i)[j] + ( (  j == columns.size() - 1 )  ? ")" : "," ) ;
 						}
 						else
 						{
-							row += "'" + rows.get(i)[j].replaceAll( "@", "' + CHAR(13)+CHAR(10) + '" ) + ( (  j == columns.size() - 1 )  ? "')" : "'," ) ;
+							row += "'" + rowsRec.get(i)[j].replaceAll( "@", "</div>\r\n\r\n<div>&nbsp;</div>\r\n\r\n<div>")
+									.replaceAll( "#", "</div>\r\n\r\n<div>&nbsp;</div>")
+									.replaceAll( "\\^", "&nbsp;" ).replaceAll( "\\*", "<div>" )
+									.replaceAll( "~", "</div>" )
+									+ ( (  j == columns.size() - 1 )  ? "')" : "'," ) ;;
 						}
 					}
 				}
-				st.executeUpdate( row );
+				Database.st.executeUpdate( row );
 			}
 		}
 		
@@ -260,7 +232,7 @@ public class ImportExport
 				}
 				try
 				{
-					st.executeUpdate( row );
+					Database.st.executeUpdate( row );
 				}
 				catch( SQLException e ){}
 			}
@@ -268,21 +240,30 @@ public class ImportExport
 			
 	}
 
-	public static void exportData( ArrayList<Boolean> selected )
+	public static void exportData( ArrayList<Integer> recIDs )
 	{
 		try
 		{
-			ResultSet recipes = st.executeQuery( "SELECT * FROM Recipe"
-					+ " WHERE contributor IN ('user', null)" );
+			if( recIDs == null )
+			{
+				return;
+			}
 			
-			if( !recipes.isBeforeFirst() || !selected.contains(true) )
+			String statement = "SELECT * FROM Recipe Where rec_ID IN (" ;
+			for( int i = 0; i < recIDs.size(); i++ )
+			{
+				statement += recIDs.get(i) + ( ( i == recIDs.size() - 1 ) ? ")" : ", " );
+			}
+			
+			ResultSet recipes = Database.st.executeQuery( statement );
+			if( !recipes.isBeforeFirst() )
 			{
 				return;
 			}
 			
 			PrintWriter writer = new PrintWriter(csv);
-			exportRec( recipes, writer, selected );
-			exportIng( writer, selected );
+			exportRec( recipes, writer );
+			exportIng( writer, recIDs );
 			
 			writer.close();
 		} catch (SQLException e) 
@@ -299,7 +280,7 @@ public class ImportExport
 		
 	}
 	
-	public static void exportRec( ResultSet recipes, PrintWriter writer, ArrayList<Boolean> selected ) throws SQLException
+	public static void exportRec( ResultSet recipes, PrintWriter writer ) throws SQLException
 	{
 		ResultSetMetaData meta = recipes.getMetaData();
 		int numCol = meta.getColumnCount();
@@ -312,47 +293,27 @@ public class ImportExport
 		
 		writer.println( columns );
 		
-		int j = 0;
 		while( recipes.next() )
 		{
-			if( selected.get( j ) )
+			String row = "";
+			for( int i = 1; i <= numCol; i++ )
 			{
-				String row = "";
-				for( int i = 1; i <= numCol; i++ )
-				{
-					row += recipes.getString(i) + "|";
-				}
-				writer.println( row.replaceAll( "\r\n\r\n<div>&nbsp;</div>\r\n\r\n", "@" ).replaceAll( "<div>", "" ).replaceAll( "</div>", "" ) );
+				row += recipes.getString(i) + "|";
 			}
-			j++;
+			writer.println( row.replaceAll( "</div>\r\n\r\n<div>&nbsp;</div>\r\n\r\n<div>", "@").replaceAll( "</div>\r\n\r\n<div>&nbsp;</div>", "#").replaceAll( "&nbsp;", "^").replaceAll( "<div>", "*" ).replaceAll( "</div>", "~" ) );
 		}
 	}
 	
-	public static void exportIng( PrintWriter writer, ArrayList<Boolean> selected ) throws SQLException
+	public static void exportIng( PrintWriter writer, ArrayList<Integer> recIDs ) throws SQLException
 	{
-		ResultSet recId = st.executeQuery( "SELECT rec_ID FROM Recipe"
-				+ " WHERE contributor IN ('user', null)" );
-		
 		String statement = "SELECT * FROM Ing_Line WHERE rec_ID IN (" ;
 		
-		int j = 0;
-		while( recId.next() )
+		for( int i = 0; i < recIDs.size(); i++ )
 		{
-			if( selected.get( j ) )
-			{
-				if( j == selected.lastIndexOf( true ) )
-				{
-					statement += recId.getString(1) + ")";
-				}
-				else
-				{
-					statement += recId.getString(1) + ", ";
-				}
-			}
-			j++;
+			statement += recIDs.get(i) + ( ( i == recIDs.size() - 1 ) ? ")" : ", " );
 		}
 		
-		ResultSet ingList = st.executeQuery( statement );
+		ResultSet ingList = Database.st.executeQuery( statement );
 		
 		ResultSetMetaData meta = ingList.getMetaData();
 		int numCol = meta.getColumnCount();
@@ -384,7 +345,7 @@ public class ImportExport
 		
 		try 
 		{
-			ResultSet rs = st.executeQuery( "SELECT rec_ID FROM Recipe" );
+			ResultSet rs = Database.st.executeQuery( "SELECT rec_ID FROM Recipe" );
 			
 			while(rs.next())
 			{
@@ -407,7 +368,7 @@ public class ImportExport
 	
 	public static void displayRecs( String statement ) throws SQLException
 	{
-		ResultSet rs = st.executeQuery( statement );
+		ResultSet rs = Database.st.executeQuery( statement );
 		
 		System.out.println("\nRecipe List:");
 		while(rs.next())

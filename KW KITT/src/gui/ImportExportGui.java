@@ -1,60 +1,31 @@
 package gui;
 
 import java.awt.BorderLayout;
-import java.awt.CardLayout;
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.EventQueue;
-import java.awt.Font;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
-import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
 import javax.swing.GroupLayout.Alignment;
-import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.SoftBevelBorder;
 import javax.swing.border.TitledBorder;
 
 import kitt.ImportExport;
-import net.miginfocom.swing.MigLayout;
 
-public class ImportExportGui  implements ItemListener
+public class ImportExportGui extends KITTGUI  implements ItemListener
 {
-    protected JFrame frame;
-    protected JTextField textSearch;
     protected ArrayList<JCheckBox> boxes;
-    protected ArrayList<Boolean> boxSel;
-    
-    /**
-     * Launch the application.
-     */
-    public static void main(String[] args) 
-    {
-        EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                try {
-                    ImportExportGui window = new ImportExportGui();
-                    window.frame.setVisible(true);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-    }
+    protected ArrayList<Integer> recIDs;
     
     /**
      * Create the application.
@@ -64,123 +35,12 @@ public class ImportExportGui  implements ItemListener
         initialize();
     }
     
-    /**
-     * Initialize the contents of the frame.
-     */
-    protected void initialize()
-	{
-		frame = new JFrame();
-	    frame.setBounds(100, 100, 1200, 700);
-	    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	    
-	    JPanel jpMenu = new JPanel();
-	    
-	    JPanel jpContent = new JPanel();
-	    
-	    JPanel jpPanel = new JPanel();
-	    
-	    GroupLayout groupLayout = new GroupLayout(frame.getContentPane());
-	    groupLayout.setHorizontalGroup(
-	        groupLayout.createParallelGroup(Alignment.LEADING)
-	            .addGroup(groupLayout.createSequentialGroup()
-	                .addComponent(jpMenu, GroupLayout.PREFERRED_SIZE, 208, GroupLayout.PREFERRED_SIZE)
-	                .addPreferredGap(ComponentPlacement.RELATED)
-	                .addComponent(jpContent, GroupLayout.DEFAULT_SIZE, 960, Short.MAX_VALUE)
-	                .addContainerGap())
-	    );
-	    groupLayout.setVerticalGroup(
-	        groupLayout.createParallelGroup(Alignment.LEADING)
-	            .addComponent(jpMenu, GroupLayout.DEFAULT_SIZE, 661, Short.MAX_VALUE)
-	            .addComponent(jpContent, GroupLayout.DEFAULT_SIZE, 661, Short.MAX_VALUE)
-	    );
-	    jpMenu.setLayout(new MigLayout("", "[grow]", "[50:n][][][][][][15.00][][15.00][][15.00][][21.00][15.00][15.00][][][][][][][][][][]"));
-	    
-	    JLabel lblNewLabel = new JLabel("Welcome To KITT ");
-	    lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
-	    jpMenu.add(lblNewLabel, "flowx,cell 0 0,alignx center,aligny bottom");
-	    
-	    JLabel lblVersion = new JLabel("version 1.0");
-	    jpMenu.add(lblVersion, "cell 0 1,alignx center,aligny top");
-	    
-	    JLabel lblNewLabel_1 = new JLabel("Enter Recipe Name");
-	    jpMenu.add(lblNewLabel_1, "cell 0 3,alignx center");
-	    
-	    textSearch = new JTextField();
-	    jpMenu.add(textSearch, "flowx,cell 0 4,growx,aligny center");
-	    textSearch.setColumns(10);
-	    
-	    JButton btnSearch = new JButton("Search");
-	    jpMenu.add(btnSearch, "cell 0 4");
-	    
-	    JButton btnNewButton = new JButton("Advanced Search");
-	    jpMenu.add(btnNewButton, "cell 0 5,alignx left");
-	    
-	    JButton btnNewButton_1 = new JButton("Random Recipe ");
-	    jpMenu.add(btnNewButton_1, "cell 0 7,growx");
-	    
-	    JButton btnNewButton_2 = new JButton("My Favroates");
-	    jpMenu.add(btnNewButton_2, "cell 0 9,growx");
-	    
-	    JButton btnNewButton_3 = new JButton("New Recipe");
-	    jpMenu.add(btnNewButton_3, "cell 0 11,growx");
-	    
-	    JButton btnNewButton_4 = new JButton("New Ingredient");
-	    jpMenu.add(btnNewButton_4, "cell 0 12,growx");
-	    
-	    JButton btnNewButton_5 = new JButton("Import");
-	    btnNewButton_5.addMouseListener(new MouseAdapter() {
-	    	@Override
-	    	public void mouseClicked(MouseEvent arg0) 
-	    	{
-	    		ImportGui imp = new ImportGui();
-	    		frame.setVisible( false );
-	    		imp.frame.setVisible( true );;
-	    		System.out.println( "Changed to import" );
-	    	}
-	    });
-	    jpMenu.add(btnNewButton_5, "cell 0 15,growx");
-	    
-	    JButton btnNewButton_6 = new JButton("Export");
-	    btnNewButton_6.addMouseListener(new MouseAdapter() {
-	    	@Override
-	    	public void mouseClicked(MouseEvent e)
-	    	{
-	    		ExportGui export = new ExportGui();
-	    		frame .setVisible( false );
-	    		export.frame.setVisible( true );;
-	    		System.out.println( "Changed to export" );
-	    	}
-	    });
-	    jpMenu.add(btnNewButton_6, "cell 0 16,growx");
-	    
-	    JButton btnHelp = new JButton("Help");
-	    jpMenu.add(btnHelp, "flowx,cell 0 23");
-	    
-	    JButton btnAbout = new JButton("About");
-	    jpMenu.add(btnAbout, "cell 0 23,alignx right,aligny baseline");
-	    jpContent.setLayout(new CardLayout(0, 0));
-	    jpContent.add(jpPanel);
-	    jpPanel.setLayout(new BorderLayout(0, 0));
-	    
-	    Component verticalStrut_1 = Box.createVerticalStrut(100);
-	    jpPanel.add(verticalStrut_1, BorderLayout.SOUTH);
-	    
-	    JLabel lblNewLabel_2 = addLabel();
-	    lblNewLabel_2.setHorizontalAlignment(SwingConstants.CENTER);
-	    lblNewLabel_2.setFont(new Font("Tahoma", Font.PLAIN, 30));
-	    jpPanel.add(lblNewLabel_2, BorderLayout.NORTH);
-	    
-	    Component horizontalStrut = Box.createHorizontalStrut(100);
-	    jpPanel.add(horizontalStrut, BorderLayout.WEST);
-	    
-	    Component horizontalStrut_1 = Box.createHorizontalStrut(96);
-	    jpPanel.add(horizontalStrut_1, BorderLayout.EAST);
-	    
-	    JPanel panel = new JPanel();
+    protected void addPanelData()
+    {
+    	JPanel panel = new JPanel();
 	    jpPanel.add(panel, BorderLayout.CENTER);
 	    
 	    JButton btnConfirm = new JButton("Confirm");
-	    String[] text = getData( btnConfirm );
 	    
 	    JPanel panel_1 = new JPanel();
 	    panel_1.setBorder( new TitledBorder( new SoftBevelBorder(BevelBorder.LOWERED, null, null, null, null), "Recipe List", TitledBorder.CENTER, TitledBorder.ABOVE_TOP, null ) ) ;
@@ -207,26 +67,35 @@ public class ImportExportGui  implements ItemListener
 	    );
 	    panel_1.setLayout(new BoxLayout(panel_1, BoxLayout.Y_AXIS));
 	    
+	    String[] recipes = getData( btnConfirm );
 	    boxes = new ArrayList<JCheckBox>();
-	    boxSel = new ArrayList<Boolean>();
+	    recIDs = new ArrayList<Integer>();
 	    
-	    for( int i = 0; i < text.length; i++ )
+	    if( recipes == null )
 	    {
-	    	JCheckBox box = new JCheckBox( text[i] );
-	    	box.setBackground(Color.LIGHT_GRAY);
-	    	box.addItemListener(this);
-	    	boxes.add( box );
-	    	boxSel.add( false );
-	    	panel_1.add( box );
+	    	JLabel noDat = new JLabel( "No data" );
+	    	panel_1.add( noDat );
+	    }
+	    else
+	    {
+	    	for( int i = 0; i < recipes.length; i++ )
+		    {
+		    	JCheckBox box = new JCheckBox( recipes[i].split( "\\|" )[1] );
+		    	box.setName( recipes[i].split( "\\|" )[0] );
+		    	box.setBackground(Color.LIGHT_GRAY);
+		    	box.addItemListener(this);
+		    	boxes.add( box );
+		    	boxes.get( i ).isSelected();
+		    	panel_1.add( box );
+		    }
 	    }
 	    
 	    panel.setLayout(gl_panel);
-	    frame.getContentPane().setLayout(groupLayout);
-	}
+    }
     
     protected String[] getData( JButton btnConfirm )
     {
-    	return new String[2];
+    	return new String[]{ "No data" };
     }
     
     protected JLabel addLabel()
@@ -237,19 +106,19 @@ public class ImportExportGui  implements ItemListener
 	@Override
 	public void itemStateChanged(ItemEvent arg0)
 	{
-		Object source = arg0.getItemSelectable();
 		
-		int index = boxes.indexOf( source );
-		if( index != -1 )
+		//Object source = arg0.getItemSelectable();
+		JCheckBox button = (JCheckBox)arg0.getItem();
+		
+		//int index = boxes.indexOf( source );
+		
+		if( arg0.getStateChange() ==1 )
 		{
-			if( arg0.getStateChange() ==1 )
-			{
-				boxSel.set(index,true);
-			}
-			else
-			{
-				boxSel.set(index,false);
-			}
+			recIDs.add( Integer.parseInt( button.getName() ) );
+		}
+		else
+		{
+			recIDs.remove( new Integer( button.getName()  ) );
 		}
 	}
 }
@@ -260,20 +129,6 @@ class ExportGui  extends ImportExportGui
 	{
 		initialize();
 	}
-	
-	public static void main(String[] args) 
-    {
-        EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                try {
-                    ExportGui window = new ExportGui();
-                    window.frame.setVisible(true);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-    }
 	
 	protected JLabel addLabel()
     {
@@ -291,7 +146,7 @@ class ExportGui  extends ImportExportGui
 	    			@Override
 	    			public void mouseClicked(MouseEvent arg0)
 	    			{
-	    				ImportExport.exportData( boxSel );
+	    				ImportExport.exportData( recIDs );
 	    				JOptionPane.showMessageDialog( frame, "Recipes and Ingredients successfully exported.");
 	    			}
 	    });
@@ -306,20 +161,6 @@ class ImportGui extends ImportExportGui
 	{
 		initialize();
 	}
-	
-	public static void main(String[] args) 
-    {
-        EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                try {
-                    ImportGui window = new ImportGui();
-                    window.frame.setVisible(true);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-    }
 	
 	protected JLabel addLabel()
     {
@@ -337,7 +178,7 @@ class ImportGui extends ImportExportGui
 		    			@Override
 		    			public void mouseClicked(MouseEvent arg0)
 		    			{
-		    				ImportExport.importData( boxSel );
+		    				ImportExport.importData( recIDs );
 		    				JOptionPane.showMessageDialog( frame, "Recipes and Ingredients successfully imported.");
 		    			}
 		    });

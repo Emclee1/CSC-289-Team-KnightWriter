@@ -1,0 +1,22 @@
+rec_ID|rec_name|difficulty|prep_time|cook_time|total_time|servings|personal_rating|course|cuisine|instructions|contributor|source|favorite|
+1007|Sausage and Mascarpone Orecchiette|easy|10.0|15.0|25.0|4.0|null|Entrée|Italian|*Bring a large pot of salted water to a boil over high heat. Add the pasta and cook until tender but still firm to the bite, stirring occasionally, about 8 to 10 minutes. Important: reserve 1 cup of the pasta water. Drain and discard the rest of the liquid. Set the pasta aside.@Meanwhile, remove the turkey sausage from its casings. In a large, heavy skillet warm the olive oil over medium-high heat. ^Add the sausage and onions. Using a wooden spoon break up the sausage into bite-sized pieces as it browns.@Continue cooking until the sausage is golden and the onions are tender. Drain and rinse the canned beans and othen add to the pan, cooking for 2 more minutes. Add the cup of pasta water and stir, scrapping up any brown bits from the bottom of the pan. Add the mascarpone cheese and stir until it dissolved into a light sauce. Add the salt, pepper, and hot pasta. Stir until coated and serve.#|KITTver1.0|http://www.foodnetwork.com/recipes/giada-de-laurentiis/orechiette-with-sausage-beans-and-mascarpone-recipe2.html|null|
+1008|Chicken Saltimbocca|moderate|15.0|20.0|35.0|4.0|null|Entrée|Italian|*Place the chicken breasts flat on the work surface and slice into thin chicken cutlets. Sprinkle the chicken with salt and pepper. Lay 1 slice of prosciutto atop each chicken cutlet.@Chop the spinach and then place it in a small bowl. Microwave the spinach briefly until it wilts, and discard any liquid. Then toss the spinach with 1 tablespoon of oil to coat.@Arrange an even, thin layer of spinach atop the prosciutto slices. Sprinkle the Parmesan evenly over each. Beginning at the short tapered end, roll up each chicken cutlet as for a jellyroll. Secure with a toothpick.@Heat the remaining 2 tablespoons of oil in a heavy large skillet over high heat. Add the chicken and cook just until golden brown, about 2 minutes per side. Add the chicken broth and lemon juice, and scrape the browned bits off the bottom of the pan with a wooden spoon. Bring the liquid to a boil. Reduce the heat to medium. Cover and simmer until the chicken is just cooked through, about 8 to 10 minutes. Transfer the chicken to a platter. Simmer the cooking liquid over high heat until it is reduced to about 2/3 cup, about 5 minutes. Season the cooking liquid with salt and pepper, to taste. Remove toothpicks from the chicken. Drizzle the reduced cooking liquid over the chicken and serve immediately.~|KITTver1.0|http://www.foodnetwork.com/recipes/giada-de-laurentiis/chicken-saltimbocca-recipe.html|null|
+Ing_Line
+rec_ID|ing_ID|line_quantity|line_unit|
+1007|1006|1.0|tsp|
+1007|1017|2.0|Tbs|
+1007|1023|0.5|cup|
+1007|1025|1.0|tsp|
+1007|1026|1.0|tsp|
+1007|1034|1.0|lb|
+1007|1035|1.0|lb|
+1007|1036|2.0|cup|
+1007|1037|8.0|oz|
+1008|1008|0.25|cup|
+1008|1010|10.0|oz|
+1008|1014|2.0|lb|
+1008|1017|3.0|Tbs|
+1008|1026|1.0|tsp|
+1008|1038|2.0|oz|
+1008|1039|14.0|oz|
+1008|1040|2.0|Tbs|
