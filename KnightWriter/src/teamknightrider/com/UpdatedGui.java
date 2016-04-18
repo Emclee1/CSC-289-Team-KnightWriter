@@ -18,6 +18,8 @@ import javax.swing.SwingConstants;
 import javax.swing.JTextField;
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Dimension;
+
 import javax.swing.Box;
 import javax.swing.DefaultListModel;
 
@@ -67,10 +69,9 @@ public class UpdatedGui {
     private JTextField textPrepTime;
     private JTextField textCookTime;
     private JTextField textTotalTime;
-    JList listIngredients ;
-    JTextArea textInstructions ;
-    DefaultListModel listModel = new DefaultListModel();
-    
+    JList<String> listIngredients;
+    JTextArea textInstructions;
+    DefaultListModel<String> listModel = new DefaultListModel<String>();
     
     JPanel jpMenu;
     JPanel jpContent;
@@ -85,6 +86,8 @@ public class UpdatedGui {
     private JTextField txtExportStatus;
     
     // jpRecipe Varables
+    
+    private int recId;
     private String recipe;
     private String course;
     private String difficulity;
@@ -94,7 +97,7 @@ public class UpdatedGui {
     private String contributor;
     private String source;
     private String cusine;
-    private String recipeName;
+ 
     
     ArrayList<String> ingredients = new ArrayList<String>();
     String instructions;
@@ -125,12 +128,13 @@ public class UpdatedGui {
     JLabel lblSugarsValue;
     JLabel lblProtienValues;
     
-    static DataBaseMgt dataBaseMgt = new DataBaseMgt();
+    static DataBaseMgt dataBaseMgt;
     
     /**
      * Launch the application.
      */
     public static void main(String[] args) {
+        dataBaseMgt = new DataBaseMgt();
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
@@ -189,7 +193,7 @@ public class UpdatedGui {
         lblWelcomeToKITT.setHorizontalAlignment(SwingConstants.CENTER);
         jpMenu.add(lblWelcomeToKITT, "flowx,cell 0 0,alignx center,aligny bottom");
         
-        JLabel lblVersion = new JLabel("version 1.0");
+        JLabel lblVersion = new JLabel("version 2.0");
         jpMenu.add(lblVersion, "cell 0 1,alignx center,aligny top");
         
         JLabel lblEnterRecipeName = new JLabel("Enter Recipe Name");
@@ -232,6 +236,7 @@ public class UpdatedGui {
         
         JLabel lblPic = new JLabel("");
         jpWelcome.add(lblPic, BorderLayout.CENTER);
+        
         
         img = new ImageIcon(this.getClass().getResource("/food-collage.jpg")).getImage();
         lblPic.setIcon(new ImageIcon(img));
@@ -363,74 +368,72 @@ public class UpdatedGui {
             gl_jpRecipe.createParallelGroup(Alignment.TRAILING)
                 .addGroup(gl_jpRecipe.createSequentialGroup()
                     .addGap(4)
-                    .addGroup(gl_jpRecipe.createParallelGroup(Alignment.LEADING, false)
-                        .addComponent(scrollPane_1, 0, 0, Short.MAX_VALUE)
-                        .addComponent(jpNutritionFacts, GroupLayout.DEFAULT_SIZE, 196, Short.MAX_VALUE))
-                    .addGap(24)
+                    .addGroup(gl_jpRecipe.createParallelGroup(Alignment.LEADING)
+                        .addComponent(jpNutritionFacts, GroupLayout.PREFERRED_SIZE, 196, GroupLayout.PREFERRED_SIZE)
+                        .addComponent(scrollPane_1, GroupLayout.PREFERRED_SIZE, 218, GroupLayout.PREFERRED_SIZE))
+                    .addPreferredGap(ComponentPlacement.RELATED)
+                    .addGroup(gl_jpRecipe.createParallelGroup(Alignment.TRAILING)
+                        .addComponent(lblNewLabel_4)
+                        .addComponent(lblNewLabel_3)
+                        .addComponent(lblRecipe)
+                        .addComponent(lblCourse)
+                        .addComponent(lblSettings))
+                    .addPreferredGap(ComponentPlacement.RELATED)
                     .addGroup(gl_jpRecipe.createParallelGroup(Alignment.LEADING)
                         .addGroup(gl_jpRecipe.createSequentialGroup()
-                            .addGroup(gl_jpRecipe.createParallelGroup(Alignment.TRAILING)
-                                .addComponent(lblNewLabel_4)
-                                .addComponent(lblNewLabel_3)
-                                .addComponent(lblRecipe)
-                                .addComponent(lblCourse)
-                                .addComponent(lblSettings))
-                            .addPreferredGap(ComponentPlacement.RELATED)
-                            .addGroup(gl_jpRecipe.createParallelGroup(Alignment.LEADING)
-                                .addGroup(gl_jpRecipe.createSequentialGroup()
-                                    .addGroup(gl_jpRecipe.createParallelGroup(Alignment.LEADING)
-                                        .addComponent(textCourse, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(textCusine, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                        .addComponent(textDiffcuilty, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                        .addGroup(gl_jpRecipe.createSequentialGroup()
-                                            .addComponent(comboBoxServings, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-                                            .addPreferredGap(ComponentPlacement.UNRELATED)
-                                            .addComponent(lblPersionalRating)))
-                                    .addGap(18)
-                                    .addComponent(btnStar1, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)
-                                    .addPreferredGap(ComponentPlacement.RELATED)
-                                    .addGroup(gl_jpRecipe.createParallelGroup(Alignment.LEADING)
-                                        .addGroup(gl_jpRecipe.createSequentialGroup()
-                                            .addGroup(gl_jpRecipe.createParallelGroup(Alignment.LEADING)
-                                                .addComponent(lblCookTime)
-                                                .addComponent(lblPrepTime)
-                                                .addComponent(lblTotalTime))
-                                            .addPreferredGap(ComponentPlacement.RELATED)
-                                            .addGroup(gl_jpRecipe.createParallelGroup(Alignment.TRAILING, false)
-                                                .addComponent(textTotalTime, Alignment.LEADING, 0, 0, Short.MAX_VALUE)
-                                                .addComponent(textCookTime, Alignment.LEADING, 0, 0, Short.MAX_VALUE)
-                                                .addComponent(textPrepTime, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE))
-                                            .addPreferredGap(ComponentPlacement.RELATED, 107, Short.MAX_VALUE)
-                                            .addGroup(gl_jpRecipe.createParallelGroup(Alignment.LEADING)
-                                                .addGroup(gl_jpRecipe.createParallelGroup(Alignment.LEADING, false)
-                                                    .addComponent(txtSource)
-                                                    .addComponent(txtContributor, GroupLayout.DEFAULT_SIZE, 267, Short.MAX_VALUE)
-                                                    .addComponent(lblContributor))
-                                                .addComponent(lblSource))
-                                            .addGap(155))
-                                        .addGroup(gl_jpRecipe.createSequentialGroup()
-                                            .addGap(2)
-                                            .addComponent(btnStar2, GroupLayout.PREFERRED_SIZE, 41, GroupLayout.PREFERRED_SIZE)
-                                            .addPreferredGap(ComponentPlacement.RELATED)
-                                            .addComponent(btnStar3, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE)
-                                            .addPreferredGap(ComponentPlacement.RELATED)
-                                            .addComponent(btnStar4, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)
-                                            .addGap(6)
-                                            .addComponent(btnStar5, GroupLayout.PREFERRED_SIZE, 41, GroupLayout.PREFERRED_SIZE)
-                                            .addContainerGap(447, Short.MAX_VALUE))))
-                                .addGroup(gl_jpRecipe.createSequentialGroup()
-                                    .addComponent(textRecipeSelected, GroupLayout.PREFERRED_SIZE, 309, GroupLayout.PREFERRED_SIZE)
-                                    .addContainerGap(478, Short.MAX_VALUE))))
-                        .addGroup(gl_jpRecipe.createSequentialGroup()
-                            .addGap(170)
-                            .addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 556, GroupLayout.PREFERRED_SIZE)
-                            .addContainerGap())))
+                            .addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 620, GroupLayout.PREFERRED_SIZE)
+                            .addContainerGap())
+                        .addGroup(gl_jpRecipe.createParallelGroup(Alignment.LEADING)
+                            .addGroup(gl_jpRecipe.createSequentialGroup()
+                                .addGroup(gl_jpRecipe.createParallelGroup(Alignment.LEADING)
+                                    .addComponent(textCourse, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(textCusine, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(textDiffcuilty, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(gl_jpRecipe.createSequentialGroup()
+                                        .addComponent(comboBoxServings, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(ComponentPlacement.UNRELATED)
+                                        .addComponent(lblPersionalRating)))
+                                .addGap(18)
+                                .addComponent(btnStar1, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(ComponentPlacement.RELATED)
+                                .addGroup(gl_jpRecipe.createParallelGroup(Alignment.LEADING)
+                                    .addGroup(gl_jpRecipe.createSequentialGroup()
+                                        .addGroup(gl_jpRecipe.createParallelGroup(Alignment.LEADING)
+                                            .addComponent(lblCookTime)
+                                            .addComponent(lblPrepTime)
+                                            .addComponent(lblTotalTime))
+                                        .addPreferredGap(ComponentPlacement.RELATED)
+                                        .addGroup(gl_jpRecipe.createParallelGroup(Alignment.TRAILING, false)
+                                            .addComponent(textTotalTime, Alignment.LEADING, 0, 0, Short.MAX_VALUE)
+                                            .addComponent(textCookTime, Alignment.LEADING, 0, 0, Short.MAX_VALUE)
+                                            .addComponent(textPrepTime, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 32, Short.MAX_VALUE))
+                                        .addPreferredGap(ComponentPlacement.RELATED, 105, Short.MAX_VALUE)
+                                        .addGroup(gl_jpRecipe.createParallelGroup(Alignment.LEADING)
+                                            .addGroup(gl_jpRecipe.createParallelGroup(Alignment.LEADING, false)
+                                                .addComponent(txtSource)
+                                                .addComponent(txtContributor, GroupLayout.DEFAULT_SIZE, 267, Short.MAX_VALUE)
+                                                .addComponent(lblContributor))
+                                            .addComponent(lblSource))
+                                        .addGap(155))
+                                    .addGroup(gl_jpRecipe.createSequentialGroup()
+                                        .addGap(2)
+                                        .addComponent(btnStar2, GroupLayout.PREFERRED_SIZE, 41, GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(ComponentPlacement.RELATED)
+                                        .addComponent(btnStar3, GroupLayout.PREFERRED_SIZE, 35, GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(ComponentPlacement.RELATED)
+                                        .addComponent(btnStar4, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)
+                                        .addGap(6)
+                                        .addComponent(btnStar5, GroupLayout.PREFERRED_SIZE, 41, GroupLayout.PREFERRED_SIZE)
+                                        .addContainerGap(445, Short.MAX_VALUE))))
+                            .addGroup(gl_jpRecipe.createSequentialGroup()
+                                .addComponent(textRecipeSelected, GroupLayout.PREFERRED_SIZE, 309, GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap(476, Short.MAX_VALUE)))))
         );
         gl_jpRecipe.setVerticalGroup(
             gl_jpRecipe.createParallelGroup(Alignment.LEADING)
                 .addGroup(gl_jpRecipe.createSequentialGroup()
                     .addContainerGap()
-                    .addGroup(gl_jpRecipe.createParallelGroup(Alignment.LEADING)
+                    .addGroup(gl_jpRecipe.createParallelGroup(Alignment.LEADING, false)
                         .addGroup(gl_jpRecipe.createSequentialGroup()
                             .addComponent(jpNutritionFacts, GroupLayout.PREFERRED_SIZE, 310, GroupLayout.PREFERRED_SIZE)
                             .addGap(18)
@@ -479,16 +482,20 @@ public class UpdatedGui {
                                         .addComponent(btnStar2, GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE)
                                         .addComponent(btnStar3, GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE)
                                         .addComponent(btnStar4, GroupLayout.PREFERRED_SIZE, 32, GroupLayout.PREFERRED_SIZE))))
-                            .addGap(43)
+                            .addPreferredGap(ComponentPlacement.RELATED, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(scrollPane, GroupLayout.PREFERRED_SIZE, 415, GroupLayout.PREFERRED_SIZE)))
-                    .addGap(110))
+                    .addGap(112))
         );
-        
+                        
         textInstructions = new JTextArea();
         scrollPane.setViewportView(textInstructions);
+        textInstructions.setLineWrap(true);
+        textInstructions.setWrapStyleWord(true);
         
-        listIngredients = new JList(listModel);
+        listIngredients = new JList<String>(listModel);
         scrollPane_1.setViewportView(listIngredients);
+        
+        
         
         JTextPane txtpnNutritionFacts = new JTextPane();
         txtpnNutritionFacts.setFont(new Font("Tahoma", Font.BOLD, 18));
@@ -848,14 +855,25 @@ public class UpdatedGui {
         
         btnRandomRecipe.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent arg0) {
+                double random = 0;
+                int random1 = 0;
+                
+                random = Math.random() * (1099 - 1000) + 1000;
+                
+                random1 = (int) Math.round(random);
+                
+                
+                
+                clearRecipe();
                 displayRecipeScreen();
-                setVarables(1000);
-                populateRecipe();
+                setVarables(random1);
+                populateRecipe();              
             }
         });
         
         btnMyFavroates.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                clearRecipe();
                 displayRecipeScreen();
             }
         });
@@ -982,6 +1000,9 @@ public class UpdatedGui {
     }
     
     protected void setVarables(int recId) {
+        
+        this.recId = dataBaseMgt.getRecId(recId);
+        recipe = dataBaseMgt.getRecipe(recId);
         recipe = dataBaseMgt.getRecipe(recId);
         course = dataBaseMgt.getCourse(recId);
         difficulity = dataBaseMgt.getDifficulty(recId);
@@ -989,18 +1010,15 @@ public class UpdatedGui {
         cookTime = dataBaseMgt.getCookTime(recId);
         totalTime = dataBaseMgt.getTotalTime(recId);
         contributor = dataBaseMgt.getContributor(recId);
-        source = dataBaseMgt.getContributor(recId);
-        ingredients = dataBaseMgt.getIngredients(recId);        
+        source = dataBaseMgt.getSource(recId);
+        ingredients = dataBaseMgt.getIngredients(recId);
         instructions = dataBaseMgt.getInstructions(recId);
         cusine = dataBaseMgt.getCusine(recId);
         
-       
-
         
     }
     
-    protected void populateRecipe()
-    {
+    protected void populateRecipe() {
         textRecipeSelected.setText(recipe);
         textCusine.setText(cusine);
         textCourse.setText(course);
@@ -1013,17 +1031,27 @@ public class UpdatedGui {
         textTotalTime.setText(totalTime);
         txtContributor.setText(contributor);
         txtSource.setText(source);
-        
-        
-        for(int index = 0 ; index < ingredients.size() ; index++)
-        listModel.addElement(ingredients.get(index));
-        
         textInstructions.setText(instructions);
-         
         
-   
-        
-               
-        
+        for (int index = 0; index < ingredients.size(); index++)
+            listModel.addElement(ingredients.get(index));
+            
+       
+    }
+    
+    protected void clearRecipe(){
+        textRecipeSelected.setText("");
+        textCusine.setText("");
+        textCourse.setText("");
+        textDiffcuilty.setText("");
+        textPrepTime.setText("");
+        textCookTime.setText("");
+        textTotalTime.setText("");
+        textPrepTime.setText("");
+        textCookTime.setText("");
+        textTotalTime.setText("");
+        txtContributor.setText("");
+        txtSource.setText("");
+        textInstructions.setText("");
     }
 }

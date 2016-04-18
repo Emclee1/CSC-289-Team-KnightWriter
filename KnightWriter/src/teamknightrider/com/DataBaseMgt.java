@@ -18,23 +18,23 @@ import java.util.ArrayList;
 
 public class DataBaseMgt {
     
-    private static final String DATABASE_FILE = "//src/Recipes4.9.16.accdb";
+    private static final String DATABASE_FILE = "//Database/Recipes4.9.16.accdb";
     
     static Connection connection;
     static Statement statement;
     static ResultSet result;
     
-//    public static void main(String args[]) throws ClassNotFoundException, SQLException {
-//        int recId = 1001;
-//        
-//        loadDataBase();
-//        
-//        System.out.println(getIngredients(1000));
-//        
-//        connection.commit();
-//        connection.close();
-//        
-//    }
+    public static void main(String args[]) throws ClassNotFoundException, SQLException {
+        int recId = 1086;
+        
+        loadDataBase();
+        
+        System.out.println(getInstructions(1000));
+        
+        connection.commit();
+        connection.close();
+        
+    }
     
     public DataBaseMgt(){
         try {
@@ -56,7 +56,7 @@ public class DataBaseMgt {
         
         Class.forName("net.ucanaccess.jdbc.UcanaccessDriver");
         connection = DriverManager.getConnection(
-                "jdbc:ucanaccess://" + System.getProperty("user.dir") + DATABASE_FILE);
+                "jdbc:ucanaccess:" + DATABASE_FILE);
                 
         statement = connection.createStatement();
         
@@ -68,17 +68,10 @@ public class DataBaseMgt {
      * @param recId
      * @return
      */
-    public static String getRecId(int recId) {
-        String id = null;
-        
-        try {
-            id = getResult(recId, "rec_ID");
-        } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-        
-        return id;
+    public static int getRecId(int recId) {
+
+      
+        return recId;
     }
     
     /**
@@ -227,14 +220,40 @@ public class DataBaseMgt {
      * @return
      */
     public static String getInstructions(int recId) {
-        String instructions = null;
+        StringBuilder instructions = new StringBuilder();
+        int replaceIndex = 0;
+        int instructionNumber=1;
         try {
-            instructions = getResult(recId, "instructions");
+            instructions.append(getResult(recId, "instructions"));
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
-        return instructions;
+       
+        
+        while (replaceIndex >= 0)
+        {
+            replaceIndex = instructions.indexOf("<div>");
+            if(replaceIndex >= 0)
+            instructions.replace(replaceIndex, replaceIndex+5 , instructionNumber + ".");
+            
+            replaceIndex = instructions.indexOf("</div>");
+            if(replaceIndex >=0)
+            instructions.replace(replaceIndex, replaceIndex+6 , "");
+            
+            
+            replaceIndex = instructions.indexOf("<div>&nbsp;</div>");
+            if(replaceIndex >=0)
+            instructions.replace(replaceIndex, replaceIndex+21 , "");
+            
+            
+            
+            instructionNumber = instructionNumber+1;
+        }
+            
+        
+        
+        return instructions.toString();
     }
     
     /**
