@@ -3,6 +3,7 @@ package gui;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Component;
+import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -30,7 +31,7 @@ public class KITTGUI
     protected JTextField textSearch;
     protected JPanel jpPanel;
     protected JPanel jpContent;
-    protected Database db;
+    protected CardLayout cardLayout = new CardLayout(0, 0);
     
     /**
      * Create the application.
@@ -40,37 +41,51 @@ public class KITTGUI
         initialize();
     }
     
+    public static void main(String[] args) 
+    {
+        EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                try {
+                    KITTGUI window = new KITTGUI();
+                    window.frame.setVisible(true);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+    
     /**
      * Initialize the contents of the frame.
      */
     protected void initialize()
 	{
-    	db = new Database();
-    	 frame = new JFrame();
-         frame.setBounds(100, 100, 1200, 700);
-         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    	Database db = new Database();
+    	frame = new JFrame();
+        frame.setBounds(100, 100, 1200, 700);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
          
-         JPanel jpMenu = new JPanel();
+        JPanel jpMenu = new JPanel();
          
-          jpContent = new JPanel();
+         jpContent = new JPanel();
          
-         jpPanel = new JPanel();
+        jpPanel = new JPanel();
          
-         GroupLayout groupLayout = new GroupLayout(frame.getContentPane());
-         groupLayout.setHorizontalGroup(
-             groupLayout.createParallelGroup(Alignment.LEADING)
-                 .addGroup(groupLayout.createSequentialGroup()
-                     .addComponent(jpMenu, GroupLayout.PREFERRED_SIZE, 208, GroupLayout.PREFERRED_SIZE)
-                     .addPreferredGap(ComponentPlacement.RELATED)
-                     .addComponent(jpContent, GroupLayout.DEFAULT_SIZE, 960, Short.MAX_VALUE)
-                     .addContainerGap())
+        GroupLayout groupLayout = new GroupLayout(frame.getContentPane());
+        groupLayout.setHorizontalGroup(
+        		groupLayout.createParallelGroup(Alignment.LEADING)
+                .addGroup(groupLayout.createSequentialGroup()
+                		.addComponent(jpMenu, GroupLayout.PREFERRED_SIZE, 208, GroupLayout.PREFERRED_SIZE)
+                		.addPreferredGap(ComponentPlacement.RELATED)
+                		.addComponent(jpContent, GroupLayout.DEFAULT_SIZE, 960, Short.MAX_VALUE)
+                		.addContainerGap())
          );
-         groupLayout.setVerticalGroup(
-             groupLayout.createParallelGroup(Alignment.LEADING)
-                 .addComponent(jpMenu, GroupLayout.DEFAULT_SIZE, 661, Short.MAX_VALUE)
-                 .addComponent(jpContent, GroupLayout.DEFAULT_SIZE, 661, Short.MAX_VALUE)
+        groupLayout.setVerticalGroup(
+        		groupLayout.createParallelGroup(Alignment.LEADING)
+                .addComponent(jpMenu, GroupLayout.DEFAULT_SIZE, 661, Short.MAX_VALUE)
+                .addComponent(jpContent, GroupLayout.DEFAULT_SIZE, 661, Short.MAX_VALUE)
          );
-         jpMenu.setLayout(new MigLayout("", "[grow]", "[50:n][][][][][][15.00][][15.00][][15.00][][21.00][15.00][15.00][][][][][][][][][][]"));
+        jpMenu.setLayout(new MigLayout("", "[grow]", "[50:n][][][][][][15.00][][15.00][][15.00][][21.00][15.00][15.00][][][][][][][][][][]"));
          
         JLabel lblWelcome = new JLabel("Welcome To KITT ");
  	    lblWelcome.setHorizontalAlignment(SwingConstants.CENTER);
@@ -125,32 +140,38 @@ public class KITTGUI
  	    JButton btnAbout = new JButton("About");
  	    listener( btnHelp );
  	    jpMenu.add(btnAbout, "cell 0 23,alignx right,aligny baseline");
- 	    
-         jpContent.setLayout(new CardLayout(0, 0));
-         jpContent.add(jpPanel);
-         jpPanel.setLayout(new BorderLayout(0, 0));
+        jpContent.setLayout( cardLayout );
+        
+        frame.getContentPane().setLayout(groupLayout);
+        
+        jpPanel = new JPanel();
+    	jpContent.add(jpPanel, "jpPanel");
+        jpPanel.setLayout(new BorderLayout(0, 0));
          
-         Component verticalStrut_1 = Box.createVerticalStrut(100);
-         jpPanel.add(verticalStrut_1, BorderLayout.SOUTH);
+        Component verticalStrut_1 = Box.createVerticalStrut(100);
+        jpPanel.add(verticalStrut_1, BorderLayout.SOUTH);
          
-         JLabel lblDataLbl = addLabel();
-         lblDataLbl.setHorizontalAlignment(SwingConstants.CENTER);
-         lblDataLbl.setFont(new Font("Tahoma", Font.PLAIN, 30));
-         jpPanel.add(lblDataLbl, BorderLayout.NORTH);
+        JLabel lblDataLbl = addLabel();
+        lblDataLbl.setHorizontalAlignment(SwingConstants.CENTER);
+        lblDataLbl.setFont(new Font("Tahoma", Font.PLAIN, 30));
+        jpPanel.add(lblDataLbl, BorderLayout.NORTH);
          
-         Component horizontalStrut = Box.createHorizontalStrut(100);
-         jpPanel.add(horizontalStrut, BorderLayout.WEST);
+        Component horizontalStrut = Box.createHorizontalStrut(100);
+        jpPanel.add(horizontalStrut, BorderLayout.WEST);
          
-         Component horizontalStrut_1 = Box.createHorizontalStrut(96);
-         jpPanel.add(horizontalStrut_1, BorderLayout.EAST);
-         frame.getContentPane().setLayout(groupLayout);
-         
-         addPanelData();
+        Component horizontalStrut_1 = Box.createHorizontalStrut(96);
+        jpPanel.add(horizontalStrut_1, BorderLayout.EAST);
+        
+        addPanelData();
      }
     
-    protected JLabel addLabel() { return new JLabel();  }
+    protected JLabel addLabel() { return new JLabel(); }
     
-    protected void addPanelData(){}
+    protected void addPanelData()
+    {
+    	WelcomeGui welcome = new WelcomeGui( jpContent );
+    	cardLayout.show( jpContent, "welcome");
+    }
     
     protected void listener( JButton button )
     {
@@ -161,12 +182,8 @@ public class KITTGUI
     	 	    	@Override
     	 	    	public void mouseClicked(MouseEvent arg0) 
     	 	    	{
-    	 	    		ImportGui imp = new ImportGui();
-    	 	    		jpContent.remove( jpPanel );
-    	 	    		jpPanel = imp.jpPanel;
-    	 	    		jpContent.add( jpPanel );
-    	 	    		jpPanel.revalidate();
-    	 	    		jpContent.revalidate();
+    	 	    		ImportGui imp = new ImportGui( jpContent );
+    	 	    		cardLayout.show( jpContent, "import");
     	 	    	}
     	 	    });
     			break;
@@ -175,12 +192,8 @@ public class KITTGUI
     	 	    	@Override
     	 	    	public void mouseClicked(MouseEvent e)
     	 	    	{
-    	 	    		ExportGui export = new ExportGui();
-    	 	    		jpContent.remove( jpPanel );
-    	 	    		jpPanel = export.jpPanel;
-    	 	    		jpContent.add( jpPanel );
-    	 	    		jpPanel.revalidate();
-    	 	    		jpContent.revalidate();
+    	 	    		ExportGui export = new ExportGui( jpContent );
+    	 	    		cardLayout.show( jpContent, "export");
     	 	    	}
     	 	    });
     			break;
@@ -190,12 +203,8 @@ public class KITTGUI
     	 	    	public void mouseClicked(MouseEvent arg0) 
     	 	    	{
     	 	    		Search search = new Search( textSearch.getText() );
-    	 	    		ResultGui result = new ResultGui( search.getResults() );
-    	 	    		jpContent.remove( jpPanel );
-    	 	    		jpPanel = result.jpPanel;
-    	 	    		jpContent.add( jpPanel );
-    	 	    		jpPanel.revalidate();
-    	 	    		jpContent.revalidate();
+    	 	    		ResultGui result = new ResultGui( false, jpContent, cardLayout,  search.getResults() );
+    	 	    		cardLayout.show( jpContent, "result");
     	 	    	}
     	 	    });
     			break;
@@ -206,12 +215,8 @@ public class KITTGUI
     	 	    	@Override
     	 	    	public void mouseClicked(MouseEvent arg0) 
     	 	    	{
-    	 	    		AdvancedSearchGui advSearch = new AdvancedSearchGui();
-    	 	    		jpContent.remove( jpPanel );
-    	 	    		jpPanel = advSearch.jpPanel;
-    	 	    		jpContent.add( jpPanel );
-    	 	    		jpPanel.revalidate();
-    	 	    		jpContent.revalidate();
+    	 	    		AdvancedSearchGui advSearch = new AdvancedSearchGui( jpContent, cardLayout );
+    	 	    		cardLayout.show( jpContent, "advSearch");
     	 	    	}
     	 	    });
     			break;
@@ -219,6 +224,14 @@ public class KITTGUI
     			break;
     		case "New Recipe":
     			break;
+    		case "Help":
+    			button.addMouseListener(new MouseAdapter() {
+    	 	    	@Override
+    	 	    	public void mouseClicked(MouseEvent arg0) 
+    	 	    	{
+    	 	    		cardLayout.show( jpContent, "welcome");
+    	 	    	}
+    	 	    });
     		default:
     			break;
     	}

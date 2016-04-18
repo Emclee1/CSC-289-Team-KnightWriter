@@ -1,6 +1,7 @@
 package gui;
 
 import java.awt.BorderLayout;
+import java.awt.CardLayout;
 import java.awt.Color;
 
 import javax.swing.BoxLayout;
@@ -24,6 +25,7 @@ import javax.swing.border.TitledBorder;
 import kitt.Database;
 import kitt.ComboItem;
 import kitt.Search;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -31,23 +33,35 @@ import java.awt.event.MouseEvent;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import javax.swing.JScrollPane;
 
 public class AdvancedSearchGui extends KITTGUI implements ActionListener
 {
     protected JSplitPane splitPane;
     protected JPanel lPanel;
-    protected JPanel rPanel;
     private ButtonGroup btnMenu;
     private JTextField searchField;
     private JComboBox<ComboItem> comboBox;
     private Search advSearch;
+    private JPanel rPanel;
+	private JScrollPane scrollPane;
     
-	public AdvancedSearchGui()
+    
+    public AdvancedSearchGui( JPanel masterPanel, CardLayout cardLayout )
 	{
 		initialize();
+		addPanelData( masterPanel, cardLayout );
+		masterPanel.add( jpPanel, "advSearch" );
 	}
 	
 	protected void addPanelData()
+	{
+		addPanelData( new JPanel(), new CardLayout() );
+	}
+	
+	
+	
+	protected void addPanelData( JPanel masterPanel, CardLayout cardLayout )
 	{
     	advSearch = new Search();
     	splitPane = new JSplitPane();
@@ -67,10 +81,8 @@ public class AdvancedSearchGui extends KITTGUI implements ActionListener
         	public void mouseClicked(MouseEvent arg0)
         	{
         		rPanel.removeAll();
-        		performSearch();
-        		splitPane.remove( rPanel );
-        		splitPane.setRightComponent( rPanel );
-        		splitPane.setDividerLocation( 220 );
+        		performSearch( masterPanel, cardLayout );
+        		scrollPane.setViewportView( rPanel );
         	}
         });
         JButton btnClear = new JButton("Clear Results");
@@ -80,9 +92,7 @@ public class AdvancedSearchGui extends KITTGUI implements ActionListener
         	public void mouseClicked(MouseEvent arg0)
         	{
         		rPanel.removeAll();
-        		splitPane.remove( rPanel );
-        		splitPane.setRightComponent( rPanel );
-        		splitPane.setDividerLocation( 220 );
+        		scrollPane.setViewportView( rPanel );
         	}
         });
         
@@ -128,10 +138,10 @@ public class AdvancedSearchGui extends KITTGUI implements ActionListener
         lPanel.setLayout(gl_panel);
         
         rPanel = new JPanel();
+        scrollPane = new JScrollPane( rPanel );
         rPanel.setBackground(Color.WHITE);
-        splitPane.setRightComponent( rPanel );	        
         
-        rPanel.setLayout(new BoxLayout(rPanel, BoxLayout.Y_AXIS));
+        splitPane.setRightComponent(scrollPane);
 	}
 	
 	public JPanel createRadioPanel()
@@ -180,7 +190,7 @@ public class AdvancedSearchGui extends KITTGUI implements ActionListener
     	return new JLabel("Advanced Search");
     }
 	
-	public void performSearch()
+	public void performSearch( JPanel masterPanel, CardLayout cardLayout )
     {
     	String search = "";
 		
@@ -196,7 +206,7 @@ public class AdvancedSearchGui extends KITTGUI implements ActionListener
 		
     	 advSearch.advSearch( search, btnMenu.getSelection().getActionCommand() );
     	 
-    	 ResultGui results = new ResultGui( advSearch.getResults() );
+    	 ResultGui results = new ResultGui( true, masterPanel, cardLayout, advSearch.getResults() );
     	 rPanel = results.getRPanel();
     }
     
@@ -257,13 +267,22 @@ public class AdvancedSearchGui extends KITTGUI implements ActionListener
 class ResultGui extends KITTGUI
 {
 	private JPanel panel;
+	private JScrollPane scrollPane;
 	
-	public ResultGui(){}
-	
-	public ResultGui( ArrayList<String> results )
+	public ResultGui()
 	{
 		initialize();
-		addResults( results );
+	}
+
+	public ResultGui( Boolean advSearch, JPanel masterPanel, CardLayout cardLayout, ArrayList<String> results )
+	{
+		initialize();
+		addResults( masterPanel, cardLayout, results );
+		
+		if( !advSearch )
+		{
+			masterPanel.add( jpPanel, "result");
+		}
 	}
 	
 	protected JLabel addLabel()
@@ -274,16 +293,16 @@ class ResultGui extends KITTGUI
 	protected void addPanelData()
 	{
 		 panel = new JPanel();
+		 scrollPane = new JScrollPane( panel );
 		 panel.setBorder(new SoftBevelBorder(BevelBorder.LOWERED, null, null, null, null));
 	     panel.setBackground(Color.WHITE);
-	     jpPanel.add( panel );	        
 	     
 	    panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+	    jpPanel.add( scrollPane );
 	}
 	
-	protected void addResults( ArrayList<String> results )
+	protected void addResults( JPanel masterPanel, CardLayout cardLayout,ArrayList<String> results )
 	{
-	     jpPanel.remove( panel );	
 	     panel.removeAll();
 	     
 	    if( results != null )
@@ -296,7 +315,8 @@ class ResultGui extends KITTGUI
 	 	    	@Override
 	 	    	public void mouseClicked(MouseEvent arg0) 
 	 	    	{
-	 	    		System.out.println( "Button rec Id: " + button.getName() );
+	 	    		RecipeGui rec = new RecipeGui( masterPanel, Integer.parseInt( button.getName() ) ) ;
+	 	    		cardLayout.show(  masterPanel, "recipe");
 	 	    	}
 	 	    });
    	 			button.setHorizontalAlignment(SwingConstants.LEFT);
@@ -318,8 +338,7 @@ class ResultGui extends KITTGUI
 	 		panel.add( button );
 	    }
 	    
-	    jpPanel.add( panel );	
-	    panel.revalidate();
+	    scrollPane.setViewportView( panel );
 	}
 	
 	public JPanel getRPanel()
