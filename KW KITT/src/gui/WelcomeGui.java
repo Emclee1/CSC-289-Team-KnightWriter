@@ -18,20 +18,6 @@ public class WelcomeGui extends KITTGUI
 		masterPanel.add( jpPanel, "welcome");
 	}
 	
-	public static void main(String[] args) 
-    {
-        EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                try {
-                    WelcomeGui window = new WelcomeGui();
-                    window.frame.setVisible(true);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-    }
-	
 	protected JLabel addLabel()
     {
     	return new JLabel("Welcome");
@@ -44,8 +30,10 @@ public class WelcomeGui extends KITTGUI
 		JLabel lblPic = new JLabel("");
         panel.add(lblPic, BorderLayout.CENTER);
         
+        frame.pack();
+        
         Image img;
         img = new ImageIcon( WelcomeGui.class.getResource("/food-collage.jpg") ).getImage();
-        lblPic.setIcon(new ImageIcon(img));
+        lblPic.setIcon(new ImageIcon(img.getScaledInstance( panel.getWidth(), panel.getHeight(), Image.SCALE_DEFAULT ) ) );
 	}
 }

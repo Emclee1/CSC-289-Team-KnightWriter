@@ -238,11 +238,7 @@ public class ImportExportGui extends KITTGUI  implements ItemListener
 	@Override
 	public void itemStateChanged(ItemEvent arg0)
 	{
-		
-		//Object source = arg0.getItemSelectable();
 		JCheckBox button = (JCheckBox)arg0.getItem();
-		
-		//int index = boxes.indexOf( source );
 		
 		if( arg0.getStateChange() ==1 )
 		{

@@ -59,8 +59,6 @@ public class AdvancedSearchGui extends KITTGUI implements ActionListener
 		addPanelData( new JPanel(), new CardLayout() );
 	}
 	
-	
-	
 	protected void addPanelData( JPanel masterPanel, CardLayout cardLayout )
 	{
     	advSearch = new Search();
@@ -243,7 +241,6 @@ public class AdvancedSearchGui extends KITTGUI implements ActionListener
 				
 				while( set.next() )
 				{
-					
 					String result = "";
 					for( int i = 1; i <= set.getMetaData().getColumnCount(); i++ )
 					{

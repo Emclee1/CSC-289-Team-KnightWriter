@@ -4,9 +4,15 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import org.apache.commons.lang.StringUtils;
+
+import gui.RecipeGui;
+
 public class Search 
 {
 	protected ResultSet results;
+	protected String type;
+	protected String search;
 	
 	public Search(){}
 	
@@ -17,7 +23,8 @@ public class Search
 	
 	public void advSearch( String search, String type )
 	{
-		int value;
+		this.type = type;
+		this.search = search;
 		String statement = "SELECT rec_ID, rec_name From Recipe WHERE ";
 		
 		if( search == null )
@@ -35,6 +42,15 @@ public class Search
 				return;
 			}
 			catch( NumberFormatException e ){}
+		}
+		
+		if( type.equals( "Cal" ) )
+		{
+			if( !StringUtils.isNumeric( search ) )
+			{
+				results = null;
+				return;
+			}
 		}
 		
 		try 
@@ -64,8 +80,7 @@ public class Search
 			}
 			else
 			{
-				value = Integer.valueOf( search );
-				statement += String.format("course = %d", value);
+				statement = "SELECT rec_ID, rec_name From Recipe";
 			}
 			
 			results = Database.st.executeQuery( statement );
@@ -79,39 +94,53 @@ public class Search
 	public ArrayList<String> getResults()
 	{
 		ArrayList<String> text = new ArrayList<String>();
+		String newRes = "";
 		
 		try 
 		{
-			if( !results.isBeforeFirst() || results == null )
+			if( results == null || !results.isBeforeFirst() )
 			{
 				return null;
-				//return new String[]{"No results"};
 			}
 			
 			int i = 1;
 			while( results.next() )
 			{
-				String newRes = String.format( ( "%d|%d. %s" ), results.getInt(1), i, results.getString(2) );
-				text.add( newRes );
-				i++;
+				if( type.equals( "Cal" ) )
+				{
+					RecipeGui rec = new RecipeGui( results.getInt( 1 ) );
+					double cal = rec.getCalories();
+					
+					if( cal <= Double.parseDouble( search ) )
+					{
+						newRes = String.format( ( "%d|%d. %s" ), results.getInt(1), i, results.getString(2) );
+						text.add( newRes );
+						i++;
+					}
+				}
+				else
+				{
+					newRes = String.format( ( "%d|%d. %s" ), results.getInt(1), i, results.getString(2) );
+					text.add( newRes );
+					i++;
+				}
 			}
 		} catch (SQLException e) 
 		{
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			return null;
 		}
 		
 		return  text;
 	}
 	
-	public ArrayList<String> getFavorites()
+	public static ArrayList<String> getFavorites()
 	{
 		ArrayList<String> text = new ArrayList<String>();
 		ResultSet fav;
 		
 		try 
 		{
-			fav = Database.st.executeQuery( "SELECT rec_name From Recipe Where favorite = 1" );
+			fav = Database.st.executeQuery( "SELECT rec_ID, rec_name From Recipe Where favorite = favorite" );
 			
 			if( !fav.isBeforeFirst() || fav == null )
 			{
@@ -121,7 +150,8 @@ public class Search
 			int i = 1;
 			while( fav.next() )
 			{
-				text.add( i + ". " + fav.getString(1) );
+				String result = String.format( ( "%d|%d. %s" ), fav.getInt(1), i, fav.getString(2) );
+				text.add( result );
 				i++;
 			}
 		} catch (SQLException e) 

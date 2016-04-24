@@ -198,7 +198,7 @@ public class ImportExport
 									.replaceAll( "#", "</div>\r\n\r\n<div>&nbsp;</div>")
 									.replaceAll( "\\^", "&nbsp;" ).replaceAll( "\\*", "<div>" )
 									.replaceAll( "~", "</div>" )
-									+ ( (  j == columns.size() - 1 )  ? "')" : "'," ) ;;
+									+ ( (  j == columns.size() - 1 )  ? "')" : "'," ) ;
 						}
 					}
 				}

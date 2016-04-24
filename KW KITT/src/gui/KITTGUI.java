@@ -7,12 +7,17 @@ import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Random;
 
 import javax.swing.Box;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -24,6 +29,8 @@ import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
 import net.miginfocom.swing.MigLayout;
+import javax.swing.JPopupMenu;
+import java.awt.Color;
 
 public class KITTGUI
 {
@@ -109,19 +116,52 @@ public class KITTGUI
  	    listener( btnAdvSearch );  
  	    jpMenu.add(btnAdvSearch, "cell 0 5,alignx left");
  	    
- 	    JButton btnRand = new JButton("Random Recipe ");
+ 	    JButton btnRand = new JButton("Random Recipe");
  	    listener( btnRand );
  	    jpMenu.add(btnRand, "cell 0 7,growx");
  	    
  	    JButton btnFav = new JButton("My Favorites");
- 	    listener( btnFav );
  	    jpMenu.add(btnFav, "cell 0 9,growx");
+ 	    
+ 	   popupMenu = new JPopupMenu();
+ 	   popupMenu.setBackground(Color.WHITE);
+ 	   ArrayList<String> favs = Search.getFavorites();
+	   if( favs == null )
+	   {
+		   JMenuItem none = new JMenuItem( "No favorites" );
+		   popupMenu.add(none );
+	   }
+	   else
+	   {
+		   popupMenu.removeAll();
+		   for( String favorite : favs )
+		   {
+			   JButton button = new JButton( favorite.split( "\\|" )[1] );
+			   button.setName( favorite.split( "\\|" )[0] );
+			   button.addMouseListener(new MouseAdapter() {
+				   @Override
+				   public void mouseClicked(MouseEvent arg0) 
+				   {
+					   RecipeGui rec = new RecipeGui( jpContent, Integer.parseInt( button.getName() ) ) ;
+					   popupMenu.hide();
+					   cardLayout.show(  jpContent, "recipe");
+				   }
+			   });
+			   button.setHorizontalAlignment(SwingConstants.LEFT);
+			   button.setForeground(Color.BLUE);
+			   button.setOpaque(false);
+			   button.setContentAreaFilled(false);
+			   button.setBorderPainted(false);
+			   popupMenu.add( button );
+		   }
+	   }
+	   listener( btnFav );
  	    
  	    JButton btnNewRec = new JButton("New Recipe");
  	    listener( btnNewRec );
  	    jpMenu.add(btnNewRec, "cell 0 11,growx");
  	    
- 	    JButton btnIngredient = new JButton("New Ingredient");
+ 	    JButton btnIngredient = new JButton("Remove Recipes");
  	    listener( btnIngredient );
  	    jpMenu.add(btnIngredient, "cell 0 12,growx");
  	    
@@ -167,10 +207,22 @@ public class KITTGUI
     
     protected JLabel addLabel() { return new JLabel(); }
     
+    JPopupMenu popupMenu;
+    
     protected void addPanelData()
     {
     	WelcomeGui welcome = new WelcomeGui( jpContent );
     	cardLayout.show( jpContent, "welcome");
+    }
+    
+    protected JPanel getCotent()
+    {
+    	return jpContent;
+    }
+    
+    protected CardLayout getLayout()
+    {
+    	return cardLayout;
     }
     
     protected void listener( JButton button )
@@ -208,8 +260,6 @@ public class KITTGUI
     	 	    	}
     	 	    });
     			break;
-    		case "My Favorites":
-    			break;
     		case "Advanced Search":
     			button.addMouseListener(new MouseAdapter() {
     	 	    	@Override
@@ -221,8 +271,59 @@ public class KITTGUI
     	 	    });
     			break;
     		case "Random Recipe":
+    			button.addMouseListener(new MouseAdapter() {
+    	 	    	@Override
+    	 	    	public void mouseClicked(MouseEvent arg0) 
+    	 	    	{
+						try
+						{
+							ResultSet idSet = Database.st.executeQuery( "Select rec_ID From Recipe" );
+							ArrayList<Integer> ids = new ArrayList<Integer>();
+	    	 	    		while( idSet.next() )
+	    	 	    		{
+	    	 	    			ids.add( idSet.getInt( 1 ) );
+	    	 	    		}
+	    	 	    		int rnd = new Random().nextInt( ids.size() );
+	    	 	    		RecipeGui recipe = new RecipeGui( jpContent, ids.get( rnd ) );
+	    	 	    		cardLayout.show( jpContent, "recipe");
+						} catch (SQLException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+    	 	    	}
+    	 	    });
     			break;
+    		case "My Favorites":
+    			button.addMouseListener(new MouseAdapter()
+    			{
+    				public void mouseClicked(MouseEvent e) {
+    					if (e.isPopupTrigger()) {
+    						showMenu(e);
+    					}
+    				}
+    				public void mousePressed(MouseEvent e) {
+    					if (e.isPopupTrigger()) {
+    						showMenu(e);
+    					}
+    				}
+    				public void mouseReleased(MouseEvent e) {
+    						showMenu(e);
+    				}
+    				private void showMenu(MouseEvent e) {
+    					popupMenu.show(e.getComponent(), e.getX(), e.getY());
+    				}
+    			});
     		case "New Recipe":
+    			break;
+    		case "Remove Recipes":
+    			button.addMouseListener(new MouseAdapter() {
+    	 	    	@Override
+    	 	    	public void mouseClicked(MouseEvent arg0) 
+    	 	    	{
+    	 	    		RemoveRecipeGui remove = new RemoveRecipeGui( jpContent );
+    	    			cardLayout.show(  jpContent, "remove");
+    	 	    	}
+    	 	    });
     			break;
     		case "Help":
     			button.addMouseListener(new MouseAdapter() {
