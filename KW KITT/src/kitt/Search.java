@@ -33,7 +33,7 @@ public class Search
 			return;
 		}
 		
-		if( type.equals( "Rec" ) )
+		if( type.equals( "Rec" ) || type.equals( "Rec" ) )
 		{
 			try
 			{
@@ -61,8 +61,28 @@ public class Search
 			}
 			else if( type.equals( "Ing" ) )
 			{
-				statement = String.format("SELECT rec_ID From Ing_Line WHERE ing_ID = %d",  Integer.parseInt( search ) );
+				statement = String.format( "SELECT ing_ID from Ingredient WHERE ing_name LIKE '*%s*'", search);
 				results = Database.st.executeQuery( statement );
+				
+				if( !results.isBeforeFirst() )
+				{
+					results = null;
+					return;
+				}
+				
+				statement = "SELECT rec_ID From Ing_Line WHERE ing_ID IN ( ";
+				while( results.next() )
+				{
+					statement += results.getInt( 1 ) + ( ( results.isLast() ) ? " )" : ", " ); 
+				}
+				
+				results = Database.st.executeQuery( statement );
+				
+				if( !results.isBeforeFirst() )
+				{
+					results = null;
+					return;
+				}
 				
 				statement = "SELECT rec_ID, rec_name From Recipe WHERE rec_ID IN (";
 				while( results.next() )

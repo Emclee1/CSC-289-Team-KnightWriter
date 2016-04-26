@@ -1,9 +1,7 @@
 package gui;
 
-import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Font;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
@@ -12,17 +10,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-import javax.swing.Box;
 import javax.swing.GroupLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
@@ -34,7 +28,7 @@ import javax.swing.border.LineBorder;
 import kitt.Calculate;
 import kitt.ComboItem;
 import kitt.Database;
-import net.miginfocom.swing.MigLayout;
+import kitt.ImportExport;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -52,6 +46,7 @@ public class RecipeGui extends KITTGUI
     private JTextField textCookTime;
     private JTextField textTotalTime;
     
+    protected JPanel jpPanel_1;
     JButton btnNewIngredient;
     private JTextField txtContributor;
     private JTextField txtSource;
@@ -83,35 +78,23 @@ public class RecipeGui extends KITTGUI
     JTextField lblSugarsValue;
     JTextField lblProtienValues;
     
-    private ResultSet recipe;
-    private ResultSet ings;
-    private ResultSet ing_totals;
-    private int rec_ID;
-	
-    private ArrayList<JTextField> values;
-    
-    
-    protected JFrame frame;
-    protected JTextField textSearch;
-    protected JPanel jpPanel;
-    private JPanel jpPanel_1;
-    protected JPanel jpContent;
-    protected CardLayout cardLayout = new CardLayout(0, 0);
+    public RecipeGui() { }
     
     public RecipeGui( int id )
     {
-    	this( false, (JPanel)null, id );
+    	this( false, (JPanel)null, (CardLayout)null, id );
     }
     
-    public RecipeGui( JPanel masterPanel, int id )
+    public RecipeGui( JPanel masterPanel, CardLayout masterLayout, int id )
 	{
-    	this( true, masterPanel, id );
+    	this( true, masterPanel, masterLayout, id );
 	}
     
-	public RecipeGui( Boolean add, JPanel masterPanel, int id )
+	public RecipeGui( Boolean add, JPanel masterPanel, CardLayout masterLayout, int id )
 	{
 		try 
 		{
+			initialize();
 			recipe = Database.st.executeQuery( "SELECT * From Recipe WHERE rec_ID = " + id );
 			recipe.next();
 			
@@ -127,24 +110,40 @@ public class RecipeGui extends KITTGUI
 			 
 			ings = Database.st.executeQuery( statement );
 			
-			initialize();
 			rec_ID = recipe.getInt( 1 );
-			
+			addButtonListeners( masterPanel, masterLayout );
 			setValues( recipe, ings, ing_totals );
 			if( add )
 			{
 				masterPanel.add( jpPanel_1, "recipe");
 			}
+			comboBoxServings.setSelectedIndex( new Double( lblServingSizeValue.getText() ).intValue() - 1 ) ;
 		} catch (SQLException e) 
 		{
 			e.printStackTrace();
 		}
 	}	
 	
-	JComboBox<ComboItem> comboBoxServings;
+	private ResultSet recipe;
+    private ResultSet ings;
+    private ResultSet ing_totals;
+    protected int rec_ID;
+	
+    protected ArrayList<JTextField> values;
+    protected ArrayList<JButton> starList;
+	protected JComboBox<ComboItem> comboBoxServings;
+	protected JButton btnCancel;
+	protected JButton btnSaveRecipe;
+	protected JButton btnEditRecipe;
+	protected JButton btnFavorite;
+	protected JLabel lblPersionalRating;
+	protected  JButton btnAddIng;
+	protected JButton btnRemIng;
+	
 	protected void addPanelData()
 	{
 		values = new ArrayList<JTextField>();
+		ingTotals = new ArrayList<Double>();
 		
 		jpPanel_1 = new JPanel();
 		jpPanel_1.setLayout(null);
@@ -154,6 +153,7 @@ public class RecipeGui extends KITTGUI
         lblRecipe.setFont(new Font("Tahoma", Font.PLAIN, 28));
         
         textRecipeSelected = new JTextField();
+        textRecipeSelected.setFont(new Font("Tahoma", Font.PLAIN, 16));
         textRecipeSelected.setBounds(336, 21, 309, 29);
         textRecipeSelected.setColumns(10);
         
@@ -193,25 +193,7 @@ public class RecipeGui extends KITTGUI
         JLabel lblTotalTime = new JLabel("Total Time ");
         lblTotalTime.setBounds(443, 123, 70, 14);
         
-        comboBoxServings = new JComboBox<ComboItem>();
-        comboBoxServings.setBackground( Color.WHITE );
-        comboBoxServings.setBounds(311, 176, 50, 22);
-        for( int i = 1; i < 11; i++ )
-        {
-        	comboBoxServings.addItem( new ComboItem( String.valueOf( i ) ) );
-        }
-        comboBoxServings.setSelectedIndex( 0 );
-        
-        comboBoxServings.addActionListener (new ActionListener () {
-            public void actionPerformed(ActionEvent e) {
-            	updateNutritionLabel();
-            }
-        });
-        
-        JLabel lblSettings = new JLabel("Servings");
-        lblSettings.setBounds(251, 180, 65, 14);
-        
-        JLabel lblPersionalRating = new JLabel("Persional Rating");
+        lblPersionalRating = new JLabel("Persional Rating");
         lblPersionalRating.setBounds(390, 180, 103, 14);
         
         addNutritionLabel();
@@ -251,16 +233,16 @@ public class RecipeGui extends KITTGUI
         txtpnRecipe.setText("Recipe");
         scrollPane.setViewportView(txtpnRecipe);
         
-        JButton btnEditRecipe = new JButton("Edit Recipe");
+        btnEditRecipe = new JButton("Edit Recipe");
 		btnEditRecipe.setBounds(762, 21, 109, 29);
 		jpPanel_1.add(btnEditRecipe);
 		
-		JButton btnSaveRecipe = new JButton("Save Recipe");
+		btnSaveRecipe = new JButton("Save Recipe");
 		btnSaveRecipe.setVisible( false );
 		btnSaveRecipe.setBounds(685, 21, 117, 29);
 		jpPanel_1.add(btnSaveRecipe);
 		
-		JButton btnCancel = new JButton("Cancel");
+		btnCancel = new JButton("Cancel");
 		btnCancel.setVisible( false );
 		jpPanel_1.add(btnCancel);
 		btnCancel.setBounds(824, 21, 91, 29);
@@ -268,8 +250,6 @@ public class RecipeGui extends KITTGUI
 		btnFavorite = new JButton("Favorite");
 		btnFavorite.setBounds(762, 168, 138, 48);
 		jpPanel_1.add(btnFavorite);
-        
-		addButtonListeners( btnEditRecipe, btnSaveRecipe, btnCancel, btnFavorite );
 		
         jpPanel_1.add(scrollPane_1);
         jpPanel_1.add(scrollPane);
@@ -277,11 +257,9 @@ public class RecipeGui extends KITTGUI
         jpPanel_1.add(lblNewLabel_3);
         jpPanel_1.add(lblRecipe);
         jpPanel_1.add(lblCourse);
-        jpPanel_1.add(lblSettings);
         jpPanel_1.add(textCourse);
         jpPanel_1.add(textCusine);
         jpPanel_1.add(textDiffcuilty);
-        jpPanel_1.add(comboBoxServings);
         jpPanel_1.add(lblPersionalRating);
         jpPanel_1.add(lblCookTime);
         jpPanel_1.add(lblPrepTime);
@@ -302,14 +280,13 @@ public class RecipeGui extends KITTGUI
         values.add( textCookTime );
         values.add( textTotalTime );
         values.add( lblServingSizeValue );
-        //rating
+        
 		values.add( textCourse );
         values.add( textCusine );
-        //values.add( txtpnRecipe );
+        
         values.add( txtContributor );
         values.add( txtSource );
         
-        //values.add( txtpnIngredients );
         values.add( lblTotalFatvaule );
         values.add( lblSaturatedFatValue );
         values.add( lblPolyFatValue );
@@ -322,10 +299,26 @@ public class RecipeGui extends KITTGUI
         values.add( lblProtienValues );
         values.add( lblCaloriesValue );
         
+        for( int i = 10; i < values.size(); i++ )
+        {
+        	values.get( i ).setEditable( false );
+        }
+        
+        btnAddIng = new JButton("Add Ingredients");
+        btnAddIng.setFont(new Font("Tahoma", Font.PLAIN, 11));
+        btnAddIng.setVisible( false );
+        btnAddIng.setBounds(248, 180, 138, 36);
+        jpPanel_1.add( btnAddIng );
+        
+        btnRemIng = new JButton("Remove Ingredients");
+        btnRemIng.setFont(new Font("Tahoma", Font.PLAIN, 11));
+        btnRemIng.setBounds(396, 180, 138, 36);
+        btnRemIng.setVisible( false );
+        jpPanel_1.add( btnRemIng );
+        
 	}
 	
-	private void addButtonListeners(JButton btnEditRecipe, JButton btnSaveRecipe, JButton btnCancel,
-			JButton btnFavorite)
+	private void addButtonListeners( JPanel masterPanel, CardLayout masterLayout )
 	{
 		btnEditRecipe.addMouseListener(new MouseAdapter() {
 			@Override
@@ -333,17 +326,23 @@ public class RecipeGui extends KITTGUI
 				btnSaveRecipe.setVisible( true );
 				btnCancel.setVisible( true );
 				btnEditRecipe.setVisible( false );
-				for( int i = 0; i < values.size(); i++ )
+				for( int i = 0; i < 10; i++ )
 				{
-					values.get( i ).setEditable( true );
-					if( i > 9 )
-					{
-						values.get( i ).setBorder( new LineBorder( Color.BLACK ) );
-					}
+				        values.get( i ).setEditable( false );
 				}
+				
+				for( JButton star : starList )
+				{
+					star.setVisible( false );
+				}
+				btnAddIng.setVisible( true );
+				btnRemIng.setVisible( true );
+				lblPersionalRating.setVisible( false );
+				lblServingSizeValue.setBorder( new LineBorder( Color.BLACK ) );
+				btnFavorite.setVisible( false );
+				comboBoxServings.setSelectedIndex( new Double( lblServingSizeValue.getText() ).intValue() - 1 );
+				comboBoxServings.setEnabled( false );
 				txtpnRecipe.setEditable( true );
-				txtpnIngredients.setEditable( true );
-				jpPanel.updateUI();
 			}
 		});
 		
@@ -353,8 +352,9 @@ public class RecipeGui extends KITTGUI
 				if(  JOptionPane.showConfirmDialog( frame, "Press yes to save changes", "Save Changes", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION )
 				{
 					saveRecipe();
-					btnCancel.doClick();
 					JOptionPane.showMessageDialog( frame, "Saved Recipe Successfully");
+					RecipeGui rec = new RecipeGui( masterPanel, masterLayout,  rec_ID );
+					masterLayout.show( masterPanel, "recipe" );
 				}
 			}
 		});
@@ -362,20 +362,8 @@ public class RecipeGui extends KITTGUI
 		btnCancel.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				btnSaveRecipe.setVisible( false );
-				btnCancel.setVisible( false );
-				btnEditRecipe.setVisible( true );
-				for( int i = 0; i < values.size(); i++ )
-				{
-					values.get( i ).setEditable( false );
-					if( i > 9 )
-					{
-						values.get( i ).setBorder( null );
-					}
-				}
-				txtpnRecipe.setEditable( false );
-				txtpnIngredients.setEditable( false );
-				jpPanel.updateUI();
+				RecipeGui rec = new RecipeGui( masterPanel, masterLayout,  rec_ID );
+				masterLayout.show( masterPanel, "recipe" );
 			}
 		});
 		
@@ -421,11 +409,56 @@ public class RecipeGui extends KITTGUI
 				}
 			}
 		});
+		
+		btnAddIng.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				try 
+				{
+					addIngredient();
+				} catch (SQLException e){
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				} catch ( NumberFormatException e ){
+					JOptionPane.showMessageDialog( frame, "Please enter a valid number");
+				}
+			}
+		});
+		
+		btnRemIng.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				String[] ingsFull = txtpnIngredients.getText().split( "\n" );
+				ArrayList<String> ingsList = new ArrayList<String>();
+				ArrayList<String> ings = new ArrayList<String>();
+				for( String line : ingsFull )
+				{
+					ingsList.add( line );
+					ings.add( line.split( " \\d+\\.?\\d*[^\\%] " )[0] );
+				}
+				
+				String ingredient = (String) JOptionPane.showInputDialog( frame, "Choose an ingredient",
+				        "Remove Ingredient", JOptionPane.QUESTION_MESSAGE, null, 
+				       ings.toArray(),
+				        ings.get( 0 ) );
+				
+				if( !( ingredient == null ) )
+				{
+					ingsList.remove( ings.indexOf( ingredient ) );
+					String ingPane = "";
+					for( String line : ingsList )
+					{
+						ingPane += line + "\n";
+					}
+					
+					txtpnIngredients.setText( ingPane );
+				}
+			}
+		});
 	}
 
-	JTextPane txtpnIngredients;
-	JTextPane txtpnRecipe;
-	JButton btnFavorite;
+	protected JTextPane txtpnIngredients;
+	protected JTextPane txtpnRecipe;
 	
 	double totfat = 0.0;
 	double satfat = 0.0;
@@ -440,7 +473,10 @@ public class RecipeGui extends KITTGUI
 	double sugar = 0.0;
 	double protein = 0.0;
 	
-	private void setValues( ResultSet recipe, ResultSet ingsOrig, ResultSet ing_totals )
+	protected ArrayList<Double> ingTotals;
+	private String ingredients;
+	
+	protected void setValues( ResultSet recipe, ResultSet ingsOrig, ResultSet ing_totals )
 	{
 		ResultSet ings = ingsOrig;       
 		ResultSet totals = ing_totals;
@@ -464,7 +500,7 @@ public class RecipeGui extends KITTGUI
 					}
 					else
 					{
-						String value = recipe.getString( i ) == null ? "No data" : recipe.getString( i );
+						String value = recipe.getString( i ) == null ? "" : recipe.getString( i );
 						values.get( j ).setText( value );
 						j++;
 					}
@@ -475,21 +511,31 @@ public class RecipeGui extends KITTGUI
 			
 			txtSource.updateUI();			
 			
-			String[] instructions = recipe.getString( 11 ).split( "</div>\r\n\r\n<div>&nbsp;</div>\r\n\r\n<div>" );
+			//String[] instructions = recipe.getString( 11 ).split( "</div>\r\n\r\n<div>&nbsp;</div>\r\n\r\n<div>" );
+			String[] instructions = recipe.getString( 11 ).split( "\r\n" );
 			String instr = "";
+			int k = 1;
 			for( int i = 0; i < instructions.length; i++ )
 			{
-				instr += "\n\u2022 Step " + ( i + 1 ) + ". " + instructions[i].replaceAll( "</div>\r\n\r\n<div>&nbsp;</div>", "").replaceAll( "&nbsp;", "").replaceAll( "<div>", "" ).replaceAll( "</div>", "" ) + "\n";
+				String line = instructions[i].replaceAll( "</div>\r\n\r\n<div>&nbsp;</div>", "").replaceAll( "&nbsp;", "").replaceAll( "<div>", "" ).replaceAll( "</div>", "" ).replaceAll( "&quot;", "\"" );
+				if( !line.matches( "" )  )
+				{
+					instr += "\n\u2022 Step " + k + ". " + line + "\n";
+					k++;
+				}
 			}
 			txtpnRecipe.setText( instr );
 			txtpnRecipe.updateUI();
 			
-			String ingredients = "";
+			ingredients = "";
+			
 			while( ings.next() && totals.next() )
 			{
 				ingredients += ings.getString( 2 ) + " " + totals.getString( 3 ) + " " + totals.getString( 4 ) + "\n";
 				
+				ingTotals.add(  totals.getDouble( 3 ) );
 				double ratio = (new Calculate( totals.getDouble( 3 ), totals.getString( 4 ), ings.getDouble( 3 ), ings.getString( 4 ) ) ).getServing();
+				
 				cal += ings.getString( 5 ) == null ? 0 : ings.getDouble( 5 ) * ratio;
 				totfat +=  ings.getString( 6 ) == null ? 0 : ings.getDouble( 6 ) * ratio;
 				satfat += ings.getString( 7 ) == null ? 0 : ings.getDouble( 7 ) * ratio;
@@ -506,7 +552,7 @@ public class RecipeGui extends KITTGUI
 			
 			txtpnIngredients.setText( ingredients );
 			txtpnIngredients.updateUI();
-			updateNutritionLabel();
+			updateNutritionLabel( true );
 		} catch (SQLException e)
 		{
 			// TODO Auto-generated catch block
@@ -514,19 +560,47 @@ public class RecipeGui extends KITTGUI
 		}
 	}
 	
-	private void updateNutritionLabel()
+	protected void updateNutritionLabel( boolean first )
 	{
-		lblTotalFatvaule.setText( String.format( "%.2fg", totfat * Double.parseDouble( comboBoxServings.getSelectedItem().toString() ) ) );
-        lblSaturatedFatValue.setText( String.format( "%.2fg",satfat * Double.parseDouble( comboBoxServings.getSelectedItem().toString() ) ) );
-        lblPolyFatValue.setText( String.format( "%.2fg", polyfat * Double.parseDouble( comboBoxServings.getSelectedItem().toString() ) ) );
-        lblTransFatValue.setText( String.format( "%.2fg",transfat * Double.parseDouble( comboBoxServings.getSelectedItem().toString() ) ) );
-        lblDietaryFiberValue.setText( String.format( "%.2fg", fiber * Double.parseDouble( comboBoxServings.getSelectedItem().toString() ) ) );
-        lblSugarsValue.setText( String.format( "%.2fg", sugar * Double.parseDouble( comboBoxServings.getSelectedItem().toString() ) ) );
-        lblCholesterolValue.setText( String.format( "%.2fmg", chol * Double.parseDouble( comboBoxServings.getSelectedItem().toString() ) ) );
-        lblSodiumValue.setText( String.format( "%.2fmg", sod * Double.parseDouble( comboBoxServings.getSelectedItem().toString() ) )  );
-        lblTotalCarbohydrateValue.setText( String.format( "%.2fg", carb * Double.parseDouble( comboBoxServings.getSelectedItem().toString() ) ) );
-        lblProtienValues.setText( String.format( "%.2fg", protein * Double.parseDouble( comboBoxServings.getSelectedItem().toString() ) ) );
-        lblCaloriesValue.setText( String.format( "%.2fg", cal * Double.parseDouble( comboBoxServings.getSelectedItem().toString() ) ) );
+		double servRatio = 1 / Double.parseDouble( lblServingSizeValue.getText() ) * Double.parseDouble( comboBoxServings.getSelectedItem().toString() );
+		
+		lblTotalFatvaule.setText( String.format( "%.2fg", totfat * servRatio ) );
+        lblSaturatedFatValue.setText( String.format( "%.2fg",satfat * servRatio ) );
+        lblPolyFatValue.setText( String.format( "%.2fg", polyfat * servRatio ) );
+        lblTransFatValue.setText( String.format( "%.2fg",transfat * servRatio ) );
+        lblDietaryFiberValue.setText( String.format( "%.2fg", fiber * servRatio ) );
+        lblSugarsValue.setText( String.format( "%.2fg", sugar * servRatio ) );
+        lblCholesterolValue.setText( String.format( "%.2fmg", chol * servRatio ) );
+        lblSodiumValue.setText( String.format( "%.2fmg", sod * servRatio ) );
+        lblTotalCarbohydrateValue.setText( String.format( "%.2fg", carb * servRatio ) );
+        lblProtienValues.setText( String.format( "%.2fg", protein * servRatio ) );
+        lblCaloriesValue.setText( String.format( "%.2fg", cal * servRatio ) );
+        
+        String[] ingList = ingredients.split( "\n" );
+        ingredients = "";
+        
+        for( int i = 0; i < ingList.length; i++ )
+        {
+        	ingredients += ingList[i].replaceAll
+			(  
+					"\\d+\\.?\\d*[^\\%] ", 
+					String.format( "%.2f ", ingTotals.get( i ) * servRatio )
+			) + "\n";
+        }
+        
+        txtpnIngredients.setText( ingredients );
+        
+        if( first)
+        {
+        	double max = Double.parseDouble( lblServingSizeValue.getText() );
+        	if( comboBoxServings.getItemCount() < max )
+        	{
+            	for( int i = 11; i <= max; i++ )
+    	        {
+    	        	comboBoxServings.addItem( new ComboItem( String.valueOf( i ) ) );
+    	        }
+        	}
+        }
 	}
 	
 	public double getCalories()
@@ -534,49 +608,183 @@ public class RecipeGui extends KITTGUI
 		return cal;
 	}
 	
-	private int saveRecipe()
+	protected void addIngredient() throws SQLException, NumberFormatException
+	{
+		ResultSet ings = Database.st.executeQuery( "SELECT ing_name, unit FROM Ingredient ORDER BY ing_name" );
+		ArrayList<String> ingList = new ArrayList<String>();
+		ArrayList<String> ingListUnit = new ArrayList<String>();
+		
+		while( ings.next() )
+		{
+				ingList.add( ings.getString( 1 ) );
+				ingListUnit.add( ings.getString( 2 ) );
+		}
+		
+		String ingredient = (String) JOptionPane.showInputDialog( frame, "Choose an ingredient",
+		        "Add New Ingredient", JOptionPane.QUESTION_MESSAGE, null, 
+		        ingList.toArray(),
+		        ingList.get( 0 ) );
+		
+		if( !( ingredient == null ) )
+		{
+			String ingUnit = ingListUnit.get( ingList.indexOf( ingredient ) );
+			String amountString = JOptionPane.showInputDialog(frame, "Enter an amount", "Add New Ingredient", JOptionPane.QUESTION_MESSAGE);
+			if( ! (amountString == null ) )
+			{
+				Double amount = Double.parseDouble( amountString );
+				ResultSet ingUnits = Database.st.executeQuery( "SELECT line_unit FROM Ing_Line GROUP BY line_unit" );
+				ArrayList<String> units = new ArrayList<String>();
+				
+				while( ingUnits.next() )
+				{
+					String row = ingUnits.getString( 1 ).replaceAll( "\r\n\r\n", "" ).replaceAll( "\r\n", "" ).replaceAll( "\n", "").replaceAll( "\r", "" );
+					
+					if( ingUnit.contains( "unit" ) )
+					{
+						if( row.equals( "unit" )  )
+						{
+							if( !units.contains( row ) )
+							{
+								units.add( row );
+							}
+						}
+					}
+					else if( ingUnit.contains( "count" ) )
+					{
+						if( row.equals( "count" )  )
+						{
+							if( !units.contains( row ) )
+							{
+								units.add( row );
+							}
+						}
+					}
+					else
+					{
+						if( !row.contains( "unit" ) && !row.contains( "count" )  )
+						{
+							if( ingUnit.contains( "lb" ) )
+							{
+								if( !row.contains( "tsp" ) && !row.contains( "Tbs" )  )
+								{
+									if( !units.contains( row ) )
+									{
+										units.add( row );
+									}
+								}
+							}
+							else if( ingUnit.contains( "Tbs" ) && ingUnit.contains( "tsp" ) )
+							{
+								if( !row.equals( "lb" )  )
+								{
+									if( !units.contains( row ) )
+									{
+										units.add( row );
+									}
+								}
+							}
+							else if(  ingUnit.equals( "g" ) )
+							{
+								if( !row.contains( "cup" ) && !row.contains( "tsp" ) && !row.contains( "Tbs" )  )
+								{
+									if( !units.contains( row ) )
+									{
+										units.add( row );
+									}
+								}
+							}
+							else
+							{
+								if( !units.contains( row ) )
+								{
+									units.add( row );
+								}
+							}
+						}
+					}
+				}
+				
+				String unit = (String) JOptionPane.showInputDialog( frame, "Choose a unit",
+				        "Add New Ingredient", JOptionPane.QUESTION_MESSAGE, null, 
+				        units.toArray(),
+				        units.get( 0 ) );
+				if( !( unit == null ) )
+				{
+					txtpnIngredients.setText( String.format( "%s %.2f %s%n", txtpnIngredients.getText() + ingredient, amount, unit  ) );
+				}
+			}
+		}
+	}
+	
+	protected int saveRecipe()
 	{
 		int result = 0;
 		try
 		{
 			String statement = "UPDATE Recipe SET ";
-			statement += String.format( "rec_name = %s ", values.get( 0 ).getText().contains( "No data" ) || values.get( 0 ).getText() == null ? "null" : "'" + values.get( 0 ).getText() ) + "', ";
-			statement += String.format( "difficulty = %s ",  values.get( 1 ).getText().contains( "No data" ) || values.get( 1 ).getText() == null ? "null" : "'" + values.get( 1 ).getText() ) + "', ";
-			statement += String.format( "prep_time = %s ",  values.get( 2 ).getText().contains( "No data" ) || values.get( 2 ).getText() == null ? "null" : values.get( 2 ).getText() ) + ", ";
-			statement += String.format( "cook_time = %s ",  values.get( 3 ).getText().contains( "No data" ) || values.get( 3 ).getText() == null ? "null" : values.get( 3 ).getText() ) + ", ";
-			statement += String.format( "total_time = %s ",  values.get( 4 ).getText().contains( "No data" ) || values.get( 4 ).getText() == null ? "null" : values.get( 4 ).getText() ) + ", ";
-			statement += String.format( "servings = %s ",  values.get( 5 ).getText().contains( "No data" ) || values.get( 5 ).getText() == null ? "null" : values.get( 5 ).getText() ) + ", ";
-			//statement += String.format( "personal_rating = %s, ",  values.get( 6 ).getText().contains( "No data" ) || values.get( 6 ).getText() == null ? "null" : values.get( 6 ).getText() ) + ", ";
-			statement += String.format( "course = %s ",  values.get( 6 ).getText().contains( "No data" ) || values.get( 7 ).getText() == null ? "null" : "'" + values.get( 6 ).getText() ) + "', ";
-			statement += String.format( "cuisine = %s ",  values.get( 7 ).getText().contains( "No data" ) || values.get( 8 ).getText() == null ? "null" : "'" + values.get( 7 ).getText() ) + "', ";
+			
+			statement += String.format( "rec_name = '%s', ", values.get( 0 ).getText().equals( "" ) || values.get( 0 ).getText() == null ? "" : values.get( 0 ).getText() ) ;
+			statement += String.format( "difficulty = '%s', ",  values.get( 1 ).getText().equals( "" ) || values.get( 1 ).getText() == null ? "" : values.get( 1 ).getText() );
+			statement += String.format( "prep_time = %s, ",  values.get( 2 ).getText().equals( "" ) || values.get( 2 ).getText() == null ? "" : values.get( 2 ).getText() );
+			statement += String.format( "cook_time = %s, ",  values.get( 3 ).getText().equals( "" ) || values.get( 3 ).getText() == null ? "" : values.get( 3 ).getText() );
+			statement += String.format( "total_time = %s, ",  values.get( 4 ).getText().equals( "" ) || values.get( 4 ).getText() == null ? "" : values.get( 4 ).getText() );
+			statement += String.format( "servings = %s, ",  values.get( 5 ).getText().equals( "" ) || values.get( 5 ).getText() == null ? "" : values.get( 5 ).getText() );
+			statement += String.format( "course = '%s', ",  values.get( 6 ).getText().equals( "" ) || values.get( 6 ).getText() == null ? "" : values.get( 6 ).getText() );
+			statement += String.format( "cuisine = '%s', ",  values.get( 7 ).getText().equals( "" ) || values.get( 7 ).getText() == null ? "" : values.get( 7 ).getText() );
 			
 			String instructions = txtpnRecipe.getText().replaceAll( "\n\n", "</div>\r\n\r\n<div>&nbsp;</div>\r\n\r\n<div>")
-					.replaceAll( "^\n\u2022 Step [0-9].", " ")
+					.replaceAll( "\n\u2022 Step \\d. ", "" )
+					.replaceAll( "\u2022 Step \\d. ", "" )
+					.replaceAll( "\n\u2022 Step \\d.", "" )
+					.replaceAll( "\u2022 Step \\d.", "" )
 					.replaceAll( "#", "</div>\r\n\r\n<div>&nbsp;</div>")
 					.replaceAll( "\\^", "&nbsp;" ).replaceAll( "\\*", "<div>" )
-					.replaceAll( "~", "</div>" ) ;
+					.replaceAll( "~", "</div>" ) 
+					.replaceAll( "\"", "&quot;" );
 			
-			statement += String.format( "instructions = %s, ",  instructions );
+			statement += String.format( "instructions = '%s', ",  instructions );
 			
-			statement += String.format( "contributor = %s ",  values.get( 8 ).getText().contains( "No data" ) || values.get( 9 ).getText() == null ? "null, " : "'" + values.get( 8 ).getText() ) + "', ";
-			statement += String.format( "source = %s ",  values.get( 9 ).getText().contains( "No data" ) || values.get( 10 ).getText() == null ? "null, " : "'" + values.get( 9 ).getText() ) + "', ";
+			statement += String.format( "contributor = '%s', ",  values.get( 8 ).getText().equals( "" ) || values.get( 8 ).getText() == null ? "" : values.get( 8 ).getText() );
+			statement += String.format( "source = '%s' ",  values.get( 9 ).getText().equals( "" ) || values.get( 9 ).getText() == null ? "" : values.get( 9 ).getText() );
 			
 			statement += " WHERE rec_ID = " + rec_ID;
+			
 			result =  Database.st.executeUpdate( statement );
+			saveIngredients();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} 
-		finally
-		{
-			
 		}
 		
 		return result;
 	}
 	
-	private void addStars( int stars )
+	protected void saveIngredients() throws SQLException
 	{
+		String[] ingsFull = txtpnIngredients.getText().split( "\n" );
+		
+		Database.st.execute( "DELETE FROM Ing_Line WHERE rec_ID = " + rec_ID );
+		
+		for( String line : ingsFull )
+		{
+			ResultSet ing = Database.st.executeQuery( "SELECT ing_ID FROM Ingredient WHERE ing_name = '" + line.split( " \\d+\\.?\\d*[^\\%] " )[0] + "'" );
+			if( !( line == "" ) )
+			{
+				String serving = line.replace( line.split( " \\d+\\.?\\d*[^\\%] " )[0], "" ).replace( line.split( " \\d+\\.?\\d*[^\\%] " )[1],"");
+				ing.next();
+				int ing_ID = ing.getInt( 1 );
+				String statement = "INSERT INTO Ing_Line VALUES ( ";
+				statement += String.format( "%d, %d, %s, '%s' )", rec_ID, ing_ID, serving, line.split( " \\d+\\.?\\d*[^\\%] " )[1].split( "\n" )[0] );
+				Database.st.execute( statement );
+				Database.st.execute( "INSERT INTO Ing_Line VALUES ( " + rec_ID + ", 1180, 4.0, 'tsp' )" );
+				Database.con.commit();
+			}
+		}
+	}
+	
+	protected void addStars( int stars )
+	{
+		starList = new ArrayList<JButton>();
 		JButton btnStar1 = new JButton("");
         btnStar1.setBounds(485, 166, 33, 32);
         btnStar1.setBorderPainted(false);
@@ -611,11 +819,16 @@ public class RecipeGui extends KITTGUI
         btnStar4.setBorderPainted(false);
         btnStar4.setIcon(new ImageIcon(ratingStar));
         
-        jpPanel_1.add(btnStar1);
-        jpPanel_1.add(btnStar2);
-        jpPanel_1.add(btnStar3);
-        jpPanel_1.add(btnStar4);
-        jpPanel_1.add(btnStar5);
+        starList.add(btnStar1);
+        starList.add(btnStar2);
+        starList.add(btnStar3);
+        starList.add(btnStar4);
+        starList.add(btnStar5);
+        
+        for( JButton star : starList )
+        {
+        	jpPanel_1.add( star );
+        }
         
         btnStarActionListner(btnStar1, btnStar2, btnStar3, btnStar5, btnStar4);
         
@@ -735,10 +948,12 @@ public class RecipeGui extends KITTGUI
         });
     }
 	
-	private void addNutritionLabel()
+	JPanel jpNutritionFacts;
+	
+	protected void addNutritionLabel()
 	{
-		 JPanel jpNutritionFacts = new JPanel();
-	     jpNutritionFacts.setBounds(4, 11, 196, 317);
+		 jpNutritionFacts = new JPanel();
+	     jpNutritionFacts.setBounds(4, 11, 211, 317);
 	     jpNutritionFacts.setBorder(new LineBorder(new Color(0, 0, 0), 2));
 	     jpNutritionFacts.setBackground(Color.WHITE);
 	     
@@ -747,8 +962,8 @@ public class RecipeGui extends KITTGUI
 	     txtpnNutritionFacts.setText("Nutrition Facts");
 	        
 	        JLabel txtpnTest = new JLabel();
-	        txtpnTest.setFont(new Font("Tahoma", Font.PLAIN, 9));
-	        txtpnTest.setText("Serving Size");
+	        txtpnTest.setFont(new Font("Tahoma", Font.PLAIN, 11));
+	        txtpnTest.setText("Recommended Serving Size:");
 	        
 	        JLabel txtpnTotalFat = new JLabel();
 	        txtpnTotalFat.setFont(new Font("Tahoma", Font.BOLD, 11));
@@ -855,6 +1070,23 @@ public class RecipeGui extends KITTGUI
 	        lblServingSizeValue.setBorder( null );
 	        lblServingSizeValue.setBackground(Color.WHITE);
 	        
+	        JLabel lblSettings = new JLabel("Servings");
+	        lblSettings.setFont(new Font("Tahoma", Font.PLAIN, 9));
+	        
+	        comboBoxServings = new JComboBox<ComboItem>();
+	        comboBoxServings.setFont(new Font("Tahoma", Font.PLAIN, 9));
+	        comboBoxServings.setBackground( Color.WHITE );
+	        for( int i = 1; i < 11; i++ )
+	        {
+	        	comboBoxServings.addItem( new ComboItem( String.valueOf( i ) ) );
+	        }
+	        comboBoxServings.setSelectedIndex( 0 );
+	        comboBoxServings.addActionListener (new ActionListener () {
+	            public void actionPerformed(ActionEvent e) {
+	            	updateNutritionLabel( true );
+	            }
+	        });
+	        
 	        GroupLayout gl_jpNutritionFacts = new GroupLayout(jpNutritionFacts);
 	        gl_jpNutritionFacts.setHorizontalGroup(
 	        	gl_jpNutritionFacts.createParallelGroup(Alignment.LEADING)
@@ -867,10 +1099,6 @@ public class RecipeGui extends KITTGUI
 	        						.addComponent(txtpnTotalFat, GroupLayout.PREFERRED_SIZE, 63, GroupLayout.PREFERRED_SIZE)
 	        						.addGroup(gl_jpNutritionFacts.createSequentialGroup()
 	        							.addContainerGap()
-	        							.addComponent(txtpnSaturatedFat))
-	        						.addComponent(txtpnTest)
-	        						.addGroup(gl_jpNutritionFacts.createSequentialGroup()
-	        							.addContainerGap()
 	        							.addGroup(gl_jpNutritionFacts.createParallelGroup(Alignment.LEADING)
 	        								.addComponent(lblPolyFat)
 	        								.addComponent(txtpnTransFat)))
@@ -880,25 +1108,38 @@ public class RecipeGui extends KITTGUI
 	        								.addComponent(lblProtien)
 	        								.addComponent(txtpnSugars)
 	        								.addComponent(txtpnDietaryFiber)))
-	        						.addComponent(txtpnTotalCarbohydrate)
 	        						.addComponent(txtpnSodium)
-	        						.addComponent(txtpnCholesterol))
-	        					.addGap(2)
-	        					.addGroup(gl_jpNutritionFacts.createParallelGroup(Alignment.LEADING)
+	        						.addComponent(txtpnCholesterol)
+	        						.addGroup(gl_jpNutritionFacts.createParallelGroup(Alignment.LEADING, false)
+	        							.addComponent(txtpnTest, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+	        							.addGroup(gl_jpNutritionFacts.createSequentialGroup()
+	        								.addContainerGap()
+	        								.addComponent(txtpnSaturatedFat)))
 	        						.addGroup(gl_jpNutritionFacts.createParallelGroup(Alignment.TRAILING)
-	        							.addComponent(lblProtienValues, GroupLayout.DEFAULT_SIZE, 49, Short.MAX_VALUE)
-	        							.addComponent(lblSodiumValue, GroupLayout.DEFAULT_SIZE, 49, Short.MAX_VALUE)
-	        							.addComponent(lblDietaryFiberValue, GroupLayout.DEFAULT_SIZE, 49, Short.MAX_VALUE)
-	        							.addComponent(lblTotalCarbohydrateValue, GroupLayout.DEFAULT_SIZE, 49, Short.MAX_VALUE)
-	        							.addComponent(lblTransFatValue, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 49, Short.MAX_VALUE)
-	        							.addComponent(lblCholesterolValue, GroupLayout.DEFAULT_SIZE, 49, Short.MAX_VALUE)
-	        							.addComponent(lblSugarsValue, GroupLayout.DEFAULT_SIZE, 49, Short.MAX_VALUE)
-	        							.addComponent(lblPolyFatValue, GroupLayout.DEFAULT_SIZE, 70, Short.MAX_VALUE))
-	        						.addGroup(gl_jpNutritionFacts.createParallelGroup(Alignment.LEADING)
-	        							.addComponent(lblServingSizeValue, GroupLayout.PREFERRED_SIZE, 49, GroupLayout.PREFERRED_SIZE)
-	        							.addComponent(lblSaturatedFatValue, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 49, Short.MAX_VALUE)
-	        							.addComponent(lblTotalFatvaule, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 49, Short.MAX_VALUE)
-	        							.addComponent(lblCaloriesValue, Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, 70, GroupLayout.PREFERRED_SIZE)))))
+	        							.addGroup(gl_jpNutritionFacts.createSequentialGroup()
+	        								.addComponent(lblSettings)
+	        								.addGap(18)
+	        								.addComponent(comboBoxServings, GroupLayout.PREFERRED_SIZE, 36, GroupLayout.PREFERRED_SIZE)
+	        								.addPreferredGap(ComponentPlacement.RELATED))
+	        							.addComponent(txtpnTotalCarbohydrate)))
+	        					.addGroup(gl_jpNutritionFacts.createParallelGroup(Alignment.LEADING)
+	        						.addGroup(gl_jpNutritionFacts.createSequentialGroup()
+	        							.addGap(2)
+	        							.addGroup(gl_jpNutritionFacts.createParallelGroup(Alignment.LEADING)
+	        								.addComponent(lblProtienValues, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 70, Short.MAX_VALUE)
+	        								.addComponent(lblSodiumValue, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 70, Short.MAX_VALUE)
+	        								.addComponent(lblDietaryFiberValue, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 70, Short.MAX_VALUE)
+	        								.addComponent(lblTotalCarbohydrateValue, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 70, Short.MAX_VALUE)
+	        								.addComponent(lblTransFatValue, GroupLayout.DEFAULT_SIZE, 70, Short.MAX_VALUE)
+	        								.addComponent(lblCholesterolValue, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 70, Short.MAX_VALUE)
+	        								.addComponent(lblSugarsValue, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 70, Short.MAX_VALUE)
+	        								.addComponent(lblPolyFatValue, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 70, Short.MAX_VALUE)
+	        								.addComponent(lblSaturatedFatValue, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 70, Short.MAX_VALUE)
+	        								.addComponent(lblTotalFatvaule, Alignment.TRAILING, GroupLayout.DEFAULT_SIZE, 70, Short.MAX_VALUE)
+	        								.addComponent(lblCaloriesValue, Alignment.TRAILING, GroupLayout.PREFERRED_SIZE, 70, GroupLayout.PREFERRED_SIZE)))
+	        						.addGroup(gl_jpNutritionFacts.createSequentialGroup()
+	        							.addPreferredGap(ComponentPlacement.UNRELATED)
+	        							.addComponent(lblServingSizeValue, GroupLayout.PREFERRED_SIZE, 49, GroupLayout.PREFERRED_SIZE)))))
 	        			.addContainerGap())
 	        );
 	        gl_jpNutritionFacts.setVerticalGroup(
@@ -906,10 +1147,14 @@ public class RecipeGui extends KITTGUI
 	        		.addGroup(gl_jpNutritionFacts.createSequentialGroup()
 	        			.addComponent(txtpnNutritionFacts, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
 	        			.addPreferredGap(ComponentPlacement.RELATED)
-	        			.addGroup(gl_jpNutritionFacts.createParallelGroup(Alignment.LEADING)
-	        				.addComponent(lblServingSizeValue, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-	        				.addComponent(txtpnTest, GroupLayout.PREFERRED_SIZE, 15, GroupLayout.PREFERRED_SIZE))
-	        			.addPreferredGap(ComponentPlacement.UNRELATED)
+	        			.addGroup(gl_jpNutritionFacts.createParallelGroup(Alignment.BASELINE)
+	        				.addComponent(txtpnTest, GroupLayout.PREFERRED_SIZE, 15, GroupLayout.PREFERRED_SIZE)
+	        				.addComponent(lblServingSizeValue, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+	        			.addPreferredGap(ComponentPlacement.RELATED)
+	        			.addGroup(gl_jpNutritionFacts.createParallelGroup(Alignment.BASELINE)
+	        				.addComponent(lblSettings, GroupLayout.PREFERRED_SIZE, 14, GroupLayout.PREFERRED_SIZE)
+	        				.addComponent(comboBoxServings, GroupLayout.PREFERRED_SIZE, 18, GroupLayout.PREFERRED_SIZE))
+	        			.addPreferredGap(ComponentPlacement.RELATED)
 	        			.addGroup(gl_jpNutritionFacts.createParallelGroup(Alignment.BASELINE)
 	        				.addComponent(lblCalories)
 	        				.addComponent(lblCaloriesValue, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
@@ -955,10 +1200,190 @@ public class RecipeGui extends KITTGUI
 	        			.addGroup(gl_jpNutritionFacts.createParallelGroup(Alignment.TRAILING)
 	        				.addComponent(lblProtienValues, 0, 0, Short.MAX_VALUE)
 	        				.addComponent(lblProtien, Alignment.LEADING))
-	        			.addContainerGap(32, Short.MAX_VALUE))
+	        			.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
 	        );
 	        jpNutritionFacts.setLayout(gl_jpNutritionFacts);
 	        
 	        jpPanel_1.add(jpNutritionFacts);
+	}
+}
+
+class NewRecipeGui extends RecipeGui
+{
+	public NewRecipeGui( JPanel masterPanel, CardLayout masterLayout )
+	{
+		initialize();
+		setValues();
+		addButtonListeners( masterPanel, masterLayout );
+		masterPanel.add( jpPanel_1, "newrecipe");
+	}
+	
+	protected void setValues()
+	{
+		txtpnRecipe.setText( "" );
+		txtpnIngredients.setText( "" );
+		
+		for( int i = 0; i < values.size(); i++ )
+		{
+			values.get( i ).setEditable( true );
+			if( i > 9 )
+			{
+				//values.get( i ).setBorder( new LineBorder( Color.BLACK ) );
+			}
+		}
+		
+		for( JButton star : starList )
+		{
+			star.setVisible( false );
+		}
+		
+		btnAddIng.setVisible( true );
+		btnRemIng.setVisible( true );
+		
+		btnSave = new JButton();
+		btnClear = new JButton();
+		
+		btnSave.setBounds( btnSaveRecipe.getBounds() );
+		btnClear.setBounds( btnCancel.getBounds() );
+		
+		jpPanel_1.add( btnSave );
+		jpPanel_1.add( btnClear );
+		
+		btnEditRecipe.setVisible( false );
+		btnSave.setText( "Save changes" );
+		btnClear.setText( "Clear all" );
+		
+		btnSave.setVisible( true );
+		btnClear.setVisible( true );
+		
+		lblServingSizeValue.setBorder( new LineBorder( Color.BLACK ) );
+		btnFavorite.setVisible( false );
+		comboBoxServings.setVisible( false );
+		lblPersionalRating.setVisible( false );
+		
+		txtpnRecipe.setEditable( true );
+	}
+	
+	private JButton btnSave;
+	private JButton btnClear;
+	
+	protected void addButtonListeners(JButton btnEditRecipe, JButton btnSaveRecipe, JButton btnCancel,
+			JButton btnFavorite) {}
+	
+	private void addButtonListeners( JPanel masterPanel, CardLayout masterLayout )
+	{
+		btnSave.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if(  JOptionPane.showConfirmDialog( frame, "Press yes to save changes.", "Save Changes", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION )
+				{
+					int id = saveRecipe();
+					JOptionPane.showMessageDialog( frame, "Saved Recipe Successfully");
+					RecipeGui rec = new RecipeGui( masterPanel, masterLayout, id );
+					masterLayout.show(  masterPanel, "recipe");
+				}
+			}
+		});
+		
+		btnClear.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if(  JOptionPane.showConfirmDialog( frame, "Press yes to discard changes.", "Discard Changes", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION )
+				{
+					NewRecipeGui newRec = new NewRecipeGui( masterPanel, masterLayout );
+					masterLayout.show( masterPanel, "newrecipe" );
+				}
+			}
+		});
+		
+		btnAddIng.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				try 
+				{
+					addIngredient();
+				} catch (SQLException e){
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				} catch ( NumberFormatException e ){
+					JOptionPane.showMessageDialog( frame, "Please enter a valid number");
+				}
+			}
+		});
+		
+		btnRemIng.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				String[] ingsFull = txtpnIngredients.getText().split( "\n" );
+				ArrayList<String> ingsList = new ArrayList<String>();
+				ArrayList<String> ings = new ArrayList<String>();
+				for( String line : ingsFull )
+				{
+					ingsList.add( line );
+					ings.add( line.split( " \\d+\\.?\\d*[^\\%] " )[0] );
+				}
+				
+				String ingredient = (String) JOptionPane.showInputDialog( frame, "Choose an ingredient",
+				        "Remove Ingredient", JOptionPane.QUESTION_MESSAGE, null, 
+				       ings.toArray(),
+				        ings.get( 0 ) );
+				
+				if( !( ingredient == null ) )
+				{
+					ingsList.remove( ings.indexOf( ingredient ) );
+					String ingPane = "";
+					for( String line : ingsList )
+					{
+						ingPane += line + "\n";
+					}
+					
+					txtpnIngredients.setText( ingPane );
+				}
+			}
+		});
+	}	
+	
+	protected int saveRecipe()
+	{
+		try
+		{
+			String statement = "INSERT INTO Recipe ( rec_ID, rec_name, difficulty, prep_time, cook_time, total_time, servings, course, cuisine, instructions, contributor, source ) VALUES ( ";
+			
+			rec_ID = ImportExport.getLastID() + 1;
+			
+			statement +=  rec_ID + ", ";
+			statement += String.format( "'%s', ", values.get( 0 ).getText().equals( "" ) || values.get( 0 ).getText() == null ? "" : values.get( 0 ).getText() ) ;
+			statement += String.format( "'%s', ",  values.get( 1 ).getText().equals( "" ) || values.get( 1 ).getText() == null ? "" : values.get( 1 ).getText() );
+			statement += String.format( "%s, ",  values.get( 2 ).getText().equals( "" ) || values.get( 2 ).getText() == null ? null : values.get( 2 ).getText() );
+			statement += String.format( "%s, ",  values.get( 3 ).getText().equals( "" ) || values.get( 3 ).getText() == null ? null : values.get( 3 ).getText() );
+			statement += String.format( "%s, ",  values.get( 4 ).getText().equals( "" ) || values.get( 4 ).getText() == null ? null : values.get( 4 ).getText() );
+			statement += String.format( "%s, ",  values.get( 5 ).getText().equals( "" ) || values.get( 5 ).getText() == null ? "" : values.get( 5 ).getText() );
+			statement += String.format( "'%s', ",  values.get( 6 ).getText().equals( "" ) || values.get( 6 ).getText() == null ? "" : values.get( 6 ).getText() );
+			statement += String.format( "'%s', ",  values.get( 7 ).getText().equals( "" ) || values.get( 7 ).getText() == null ? "" : values.get( 7 ).getText() );
+			
+			String instructions = txtpnRecipe.getText().replaceAll( "\n\n", "</div>\r\n\r\n<div>&nbsp;</div>\r\n\r\n<div>")
+					.replaceAll( "\n\u2022 Step \\d. ", "" )
+					.replaceAll( "\u2022 Step \\d. ", "" )
+					.replaceAll( "\n\u2022 Step \\d.", "" )
+					.replaceAll( "\u2022 Step \\d.", "" )
+					.replaceAll( "#", "</div>\r\n\r\n<div>&nbsp;</div>")
+					.replaceAll( "\\^", "&nbsp;" ).replaceAll( "\\*", "<div>" )
+					.replaceAll( "~", "</div>" ) 
+					.replaceAll( "\"", "&quot;" );
+			
+			statement += String.format( "'%s', ",  instructions );
+			
+			statement += String.format( "'%s', ",  values.get( 8 ).getText().equals( "" ) || values.get( 8 ).getText() == null ? " " : values.get( 8 ).getText() );
+			statement += String.format( "'%s' ) ",  values.get( 9 ).getText().equals( "" ) || values.get( 9 ).getText() == null ? " " : values.get( 9 ).getText() );
+			
+			Database.st.execute( statement );
+			
+			saveIngredients();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		
+		return rec_ID;
 	}
 }

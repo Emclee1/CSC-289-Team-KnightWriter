@@ -1,5 +1,6 @@
 package gui;
 
+import java.awt.CardLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.SQLException;
@@ -14,9 +15,10 @@ import kitt.ImportExport;
 
 public class RemoveRecipeGui extends ImportExportGui
 {
-	public RemoveRecipeGui( JPanel masterPanel )
+	public RemoveRecipeGui( JPanel masterPanel, CardLayout masterLayout )
 	{
 		masterPanel.add( jpPanel, "remove");
+		addListener( masterPanel, masterLayout );
 	}
 	
 	protected JLabel addLabel()
@@ -24,12 +26,17 @@ public class RemoveRecipeGui extends ImportExportGui
     	return new JLabel("Remove Recipes");
     }
 	
-	protected String[] getData( JButton btnConfirm )
+	protected String[] getData()
 	{
 		ImportExport export = new ImportExport();
 	    String[] text = export.getExportList().split( "\r\n" );
 	    
-	    btnConfirm.addMouseListener
+	    return text;
+	}
+	
+	protected void addListener(JPanel masterPanel, CardLayout masterLayout  )
+	{
+		btnConfirm.addMouseListener
 	    (
 	    		new MouseAdapter() {
 	    			@Override
@@ -39,13 +46,16 @@ public class RemoveRecipeGui extends ImportExportGui
 	    				{
 	    					removeRecs();
 	    					JOptionPane.showMessageDialog( frame, "Recipes Successfully Removed");
-	    					RemoveRecipeGui rem = new RemoveRecipeGui( jpContent );
-	    					cardLayout.show( jpContent, "remove" );
+	    					RemoveRecipeGui rem = new RemoveRecipeGui( masterPanel, masterLayout );
+	    					masterLayout.show( masterPanel, "remove" );
 	    				}
 	    			}
 	    });
-	    
-	    return text;
+	}
+	
+	public JPanel getPanel()
+	{
+		return panel_1;
 	}
 	
 	protected void removeRecs()

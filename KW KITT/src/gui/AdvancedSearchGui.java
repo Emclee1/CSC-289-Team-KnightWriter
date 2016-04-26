@@ -49,7 +49,6 @@ public class AdvancedSearchGui extends KITTGUI implements ActionListener
     
     public AdvancedSearchGui( JPanel masterPanel, CardLayout cardLayout )
 	{
-		initialize();
 		addPanelData( masterPanel, cardLayout );
 		masterPanel.add( jpPanel, "advSearch" );
 	}
@@ -195,7 +194,6 @@ public class AdvancedSearchGui extends KITTGUI implements ActionListener
 		if( comboBox.isVisible() )
 		{
 			search = ( (ComboItem)comboBox.getSelectedItem() ).getID();
-			
 		}
 		else
 		{
@@ -216,7 +214,7 @@ public class AdvancedSearchGui extends KITTGUI implements ActionListener
 		
 		comboBox.removeAllItems();
 		
-		if( text.equals( "Rec" ) || text.equals( "Cal" ) )
+		if( text.equals( "Rec" ) || text.equals( "Cal" ) || text.equals( "Ing" ) )
 		{
 			searchField.setVisible( true );
 			comboBox.setVisible( false );
@@ -226,13 +224,9 @@ public class AdvancedSearchGui extends KITTGUI implements ActionListener
 		{
 			try 
 			{
-				if( text.equals( "Ing" ) )
+				if( text.equals( "Course" ) )
 				{
-					set = Database.st.executeQuery( "SELECT ing_ID, ing_name From Ingredient ORDER BY ing_name ASC" );
-				}
-				else if( text.equals( "Course" ) )
-				{
-					set = Database.st.executeQuery( "SELECT course From Recipe GROUP BY course" );
+					set = Database.st.executeQuery( "SELECT DISTINCT course From Recipe" );
 				}
 				else
 				{
@@ -298,7 +292,7 @@ class ResultGui extends KITTGUI
 	    jpPanel.add( scrollPane );
 	}
 	
-	protected void addResults( JPanel masterPanel, CardLayout cardLayout,ArrayList<String> results )
+	protected void addResults( JPanel masterPanel, CardLayout masterLayout,ArrayList<String> results )
 	{
 	     panel.removeAll();
 	     
@@ -312,8 +306,8 @@ class ResultGui extends KITTGUI
 	 	    	@Override
 	 	    	public void mouseClicked(MouseEvent arg0) 
 	 	    	{
-	 	    		RecipeGui rec = new RecipeGui( masterPanel, Integer.parseInt( button.getName() ) ) ;
-	 	    		cardLayout.show(  masterPanel, "recipe");
+	 	    		RecipeGui rec = new RecipeGui( masterPanel, masterLayout, Integer.parseInt( button.getName() ) ) ;
+	 	    		masterLayout.show(  masterPanel, "recipe");
 	 	    	}
 	 	    });
    	 			button.setHorizontalAlignment(SwingConstants.LEFT);

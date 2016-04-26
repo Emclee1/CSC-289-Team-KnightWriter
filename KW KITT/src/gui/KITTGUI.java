@@ -3,10 +3,14 @@ package gui;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Component;
+import java.awt.Desktop;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -125,39 +129,9 @@ public class KITTGUI
  	    
  	   popupMenu = new JPopupMenu();
  	   popupMenu.setBackground(Color.WHITE);
- 	   ArrayList<String> favs = Search.getFavorites();
-	   if( favs == null )
-	   {
-		   JMenuItem none = new JMenuItem( "No favorites" );
-		   popupMenu.add(none );
-	   }
-	   else
-	   {
-		   popupMenu.removeAll();
-		   for( String favorite : favs )
-		   {
-			   JButton button = new JButton( favorite.split( "\\|" )[1] );
-			   button.setName( favorite.split( "\\|" )[0] );
-			   button.addMouseListener(new MouseAdapter() {
-				   @Override
-				   public void mouseClicked(MouseEvent arg0) 
-				   {
-					   RecipeGui rec = new RecipeGui( jpContent, Integer.parseInt( button.getName() ) ) ;
-					   popupMenu.hide();
-					   cardLayout.show(  jpContent, "recipe");
-				   }
-			   });
-			   button.setHorizontalAlignment(SwingConstants.LEFT);
-			   button.setForeground(Color.BLUE);
-			   button.setOpaque(false);
-			   button.setContentAreaFilled(false);
-			   button.setBorderPainted(false);
-			   popupMenu.add( button );
-		   }
-	   }
 	   listener( btnFav );
  	    
- 	    JButton btnNewRec = new JButton("New Recipe");
+ 	    JButton btnNewRec = new JButton("Add New Recipe");
  	    listener( btnNewRec );
  	    jpMenu.add(btnNewRec, "cell 0 11,growx");
  	    
@@ -178,7 +152,7 @@ public class KITTGUI
  	    jpMenu.add(btnHelp, "flowx,cell 0 23");
  	    
  	    JButton btnAbout = new JButton("About");
- 	    listener( btnHelp );
+ 	    listener( btnAbout );
  	    jpMenu.add(btnAbout, "cell 0 23,alignx right,aligny baseline");
         jpContent.setLayout( cardLayout );
         
@@ -207,22 +181,12 @@ public class KITTGUI
     
     protected JLabel addLabel() { return new JLabel(); }
     
-    JPopupMenu popupMenu;
+    protected JPopupMenu popupMenu;
     
     protected void addPanelData()
     {
     	WelcomeGui welcome = new WelcomeGui( jpContent );
     	cardLayout.show( jpContent, "welcome");
-    }
-    
-    protected JPanel getCotent()
-    {
-    	return jpContent;
-    }
-    
-    protected CardLayout getLayout()
-    {
-    	return cardLayout;
     }
     
     protected void listener( JButton button )
@@ -284,7 +248,7 @@ public class KITTGUI
 	    	 	    			ids.add( idSet.getInt( 1 ) );
 	    	 	    		}
 	    	 	    		int rnd = new Random().nextInt( ids.size() );
-	    	 	    		RecipeGui recipe = new RecipeGui( jpContent, ids.get( rnd ) );
+	    	 	    		RecipeGui recipe = new RecipeGui( jpContent, cardLayout, ids.get( rnd ) );
 	    	 	    		cardLayout.show( jpContent, "recipe");
 						} catch (SQLException e) {
 							// TODO Auto-generated catch block
@@ -307,20 +271,30 @@ public class KITTGUI
     					}
     				}
     				public void mouseReleased(MouseEvent e) {
-    						showMenu(e);
+    					updateFavorites();
+    					showMenu(e);
     				}
     				private void showMenu(MouseEvent e) {
     					popupMenu.show(e.getComponent(), e.getX(), e.getY());
     				}
     			});
-    		case "New Recipe":
+    			break;
+    		case "Add New Recipe":
+    			button.addMouseListener(new MouseAdapter() {
+ 				   @Override
+ 				   public void mouseClicked(MouseEvent arg0) 
+ 				   {
+ 					   NewRecipeGui rec = new NewRecipeGui( jpContent, cardLayout ) ;
+ 					   cardLayout.show(  jpContent, "newrecipe");
+ 				   }
+ 			   });
     			break;
     		case "Remove Recipes":
     			button.addMouseListener(new MouseAdapter() {
     	 	    	@Override
     	 	    	public void mouseClicked(MouseEvent arg0) 
     	 	    	{
-    	 	    		RemoveRecipeGui remove = new RemoveRecipeGui( jpContent );
+    	 	    		RemoveRecipeGui remove = new RemoveRecipeGui( jpContent, cardLayout );
     	    			cardLayout.show(  jpContent, "remove");
     	 	    	}
     	 	    });
@@ -328,13 +302,71 @@ public class KITTGUI
     		case "Help":
     			button.addMouseListener(new MouseAdapter() {
     	 	    	@Override
-    	 	    	public void mouseClicked(MouseEvent arg0) 
-    	 	    	{
-    	 	    		cardLayout.show( jpContent, "welcome");
+    	 	    	public void mouseReleased(MouseEvent e) {
+    	 	    		try 
+    	 				{
+    	 					URI uri = new URI("http://www.teamknightwriter.com/contact-us/");
+    	 	    			Desktop dt = Desktop.getDesktop();
+    	 					dt.browse( uri.resolve( uri ) );
+    	 				} catch (IOException | URISyntaxException e1) 
+    	 				{
+    	 					// TODO Auto-generated catch block
+    	 					e1.printStackTrace();
+    	 				}
+    	 	    	}
+    	 	    });
+    			break;
+    		case "About":
+    			button.addMouseListener(new MouseAdapter() {
+    	 	    	@Override
+    	 	    	public void mouseReleased(MouseEvent e) {
+    	 	    		try 
+    	 				{
+    	 					URI uri = new URI("http://www.teamknightwriter.com/about-us/");
+    	 	    			Desktop dt = Desktop.getDesktop();
+    	 					dt.browse( uri.resolve( uri ) );
+    	 				} catch (IOException | URISyntaxException e1) 
+    	 				{
+    	 					// TODO Auto-generated catch block
+    	 					e1.printStackTrace();
+    	 				}
     	 	    	}
     	 	    });
     		default:
     			break;
     	}
+    }
+    
+    protected void updateFavorites()
+    {
+    	ArrayList<String> favs = Search.getFavorites();
+    	popupMenu.removeAll();
+ 	   	if( favs == null )
+ 	   	{
+ 	   		JMenuItem none = new JMenuItem( "No favorites" );
+ 	   		popupMenu.add(none );
+ 	   	}
+ 	   	else
+ 	   	{
+ 	   		for( String favorite : favs )
+ 	   		{
+ 	   			JButton button = new JButton( favorite.split( "\\|" )[1] );
+ 	   			button.setName( favorite.split( "\\|" )[0] );
+ 	   			button.addMouseListener(new MouseAdapter() {
+ 	   				@Override
+ 	   				public void mouseClicked(MouseEvent arg0) 
+ 	   				{
+ 	   					RecipeGui rec = new RecipeGui( jpContent, cardLayout, Integer.parseInt( button.getName() ) ) ;
+ 	   					cardLayout.show(  jpContent, "recipe");
+ 	   				}
+ 	   			});
+ 	   			button.setHorizontalAlignment(SwingConstants.LEFT);
+ 	   			button.setForeground(Color.BLUE);
+ 	   			button.setOpaque(false);
+ 	   			button.setContentAreaFilled(false);
+ 	   			button.setBorderPainted(false);
+ 	   			popupMenu.add( button );
+ 		   }
+ 	   }
     }
 }

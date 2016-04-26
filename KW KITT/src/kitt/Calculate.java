@@ -15,6 +15,9 @@ public class Calculate
 				case "cup":
 					calculate( tot, serv );
 					break;
+				case "lb":
+					calculate( tot, poundsToCup( serv ) );
+					break;
 				case "Tbs":
 					calculate( tot, tableToCup( serv ) );
 					break;
@@ -63,6 +66,12 @@ public class Calculate
 				case "oz":
 					calculate( tot, serv );
 					break;
+				case "Tbs":
+					calculate( tot, tableToOz( serv ) );
+					break;
+				case "tsp":
+					calculate( tot, teaToOz( serv ) );
+					break;
 				default:
 					System.out.printf( "Problem 3; totunit: %s  %f   servUnit: %s  %f%n", totUnit, tot, servUnit, serv );
 			}
@@ -94,6 +103,9 @@ public class Calculate
 				case "cup":
 					calculate( tot, cupsToTea( serv ) );
 					break;
+				case "oz":
+					calculate( tot, ozToTea( serv ) );
+					break;
 				case "Tbs":
 					calculate( tot, tableToTea( serv ) );
 					break;
@@ -109,7 +121,7 @@ public class Calculate
 			calculate( tot, serv );
 		}
 	}
-	
+
 	public void calculate(double item, double size)
 	{
 		perServing = item / size;
@@ -172,6 +184,24 @@ public class Calculate
 		return tbsp;
 	}
 	
+	private double teaToOz(double tsp)
+	{
+		double oz = 0.0;
+		
+		oz = tsp / 6;
+		
+		return oz;
+	}
+
+	private double tableToOz(double tbsp) 
+	{
+		double oz = 0.0;
+		
+		oz = tbsp / 2;
+		
+		return oz;
+	}
+	
 	public double tableToTea(double tbsp)
 	{
 		double tsp = 0.0;
@@ -208,6 +238,15 @@ public class Calculate
 		return g;
 	}
 	
+	public double poundsToCup(double lbs)
+	{
+		double cups = 0.0;
+		
+		cups = lbs * 2;
+		
+		return cups;
+	}
+	
 	public double ozToPounds(double oz)
 	{
 		double lbs = 0.0;
@@ -242,6 +281,15 @@ public class Calculate
 		table = oz * 2;
 		
 		return table;
+	}
+	
+	private double ozToTea(double oz)
+	{
+		double tsp = 0.0;
+		
+		tsp = oz * 6;
+		
+		return tsp;
 	}
 	
 	public double gramsToPounds(double g)
