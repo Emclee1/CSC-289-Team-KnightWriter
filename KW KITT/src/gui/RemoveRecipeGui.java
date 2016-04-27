@@ -5,7 +5,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.SQLException;
 
-import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -13,6 +12,14 @@ import javax.swing.JPanel;
 import kitt.Database;
 import kitt.ImportExport;
 
+///////////////////////////////////////////////////////////////////////
+//
+// Filename: RemoveRecipeGui.java
+//
+// Description:
+// Removes the selected recipes from the database
+//
+/////////////////////////////////////////////////////////////////////////
 public class RemoveRecipeGui extends ImportExportGui
 {
 	public RemoveRecipeGui( JPanel masterPanel, CardLayout masterLayout )
@@ -21,11 +28,27 @@ public class RemoveRecipeGui extends ImportExportGui
 		addListener( masterPanel, masterLayout );
 	}
 	
+///////////////////////////////////////////////////////////////////////
+//
+// Function: addLabel                        
+//
+// Description:
+// Overrides the default protected addLabel to display the Remove title.
+//
+///////////////////////////////////////////////////////////////////////
 	protected JLabel addLabel()
     {
     	return new JLabel("Remove Recipes");
     }
 	
+///////////////////////////////////////////////////////////////////////
+//
+// Function: getData                         
+//
+// Description:
+// Retrieves the list of available reposes
+//
+///////////////////////////////////////////////////////////////////////
 	protected String[] getData()
 	{
 		ImportExport export = new ImportExport();
@@ -34,6 +57,14 @@ public class RemoveRecipeGui extends ImportExportGui
 	    return text;
 	}
 	
+///////////////////////////////////////////////////////////////////////
+//
+// Function: addListener                
+//
+// Description:
+// Adds a listener for the confirm button to execute changes.
+//
+///////////////////////////////////////////////////////////////////////
 	protected void addListener(JPanel masterPanel, CardLayout masterLayout  )
 	{
 		btnConfirm.addMouseListener
@@ -53,11 +84,30 @@ public class RemoveRecipeGui extends ImportExportGui
 	    });
 	}
 	
+///////////////////////////////////////////////////////////////////////
+//
+// Function: getPanel                 
+//
+// Description:
+// Returns the result panel of delete operation
+//
+// Returns:  
+// panel_1 : Gui of the results
+//
+///////////////////////////////////////////////////////////////////////
 	public JPanel getPanel()
 	{
 		return panel_1;
 	}
-	
+
+///////////////////////////////////////////////////////////////////////
+//
+//Function: removeRecs             
+//
+// Description:
+// Executes the delete operation
+//
+///////////////////////////////////////////////////////////////////////
 	protected void removeRecs()
 	{
 		String statement = "DELETE FROM Ing_Line WHERE rec_ID IN ( ";

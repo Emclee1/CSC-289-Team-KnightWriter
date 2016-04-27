@@ -1,38 +1,38 @@
 package gui;
 
 import java.awt.BorderLayout;
-import java.awt.CardLayout;
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.Font;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
-import javax.swing.Box;
 import javax.swing.BoxLayout;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.SwingConstants;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.border.BevelBorder;
 import javax.swing.border.SoftBevelBorder;
 import javax.swing.border.TitledBorder;
 
-import kitt.Database;
 import kitt.ImportExport;
-import net.miginfocom.swing.MigLayout;
 import javax.swing.JScrollPane;
 
+///////////////////////////////////////////////////////////////////////
+//
+// Filename: ImportExportGui.java
+//
+// Description:
+// The program takes user input and a criteria to retrieve
+// all relevant search results
+//
+/////////////////////////////////////////////////////////////////////////
 public class ImportExportGui extends KITTGUI  implements ItemListener
 {
     protected ArrayList<JCheckBox> boxes;
@@ -42,6 +42,15 @@ public class ImportExportGui extends KITTGUI  implements ItemListener
     protected JPanel panel_1;
     protected JButton btnConfirm;
     
+///////////////////////////////////////////////////////////////////////
+//
+// Function: addPanelData                                    
+//
+// Description:
+// Overrides the default protected addPanelData to create the Gui as
+// a panel that displays available import/export recipes.
+//
+///////////////////////////////////////////////////////////////////////
     protected void addPanelData()
     {
     	panel = new JPanel();
@@ -108,16 +117,40 @@ public class ImportExportGui extends KITTGUI  implements ItemListener
 	    panel.setLayout(gl_panel);
     }
     
+///////////////////////////////////////////////////////////////////////
+//
+// Function: getData                         
+//
+// Description:
+// Retrieves the data that will be displayed on this panel
+//
+///////////////////////////////////////////////////////////////////////
     protected String[] getData()
     {
     	return new String[]{ "No data" };
     }
     
+///////////////////////////////////////////////////////////////////////
+//
+// Function: addLabel                        
+//
+// Description:
+// Overrides the default protected addLabel to display the Import/Export title.
+//
+///////////////////////////////////////////////////////////////////////
     protected JLabel addLabel()
     {
     	return new JLabel( "ImportExport Default, Does nothing" );
     }
     
+///////////////////////////////////////////////////////////////////////
+//
+// Function: itemStateChanged                    
+//
+// Description:
+// Listener that adds any checked boxes to list of ids to search
+//
+///////////////////////////////////////////////////////////////////////
 	@Override
 	public void itemStateChanged(ItemEvent arg0)
 	{
@@ -136,16 +169,40 @@ public class ImportExportGui extends KITTGUI  implements ItemListener
 
 class ExportGui  extends ImportExportGui
 {	
+///////////////////////////////////////////////////////////////////////
+//
+// Function: Constructor                                
+//
+// Description:
+// Initializes the class and adds itself to the master layout.
+//
+///////////////////////////////////////////////////////////////////////
 	public ExportGui( JPanel masterPanel )
 	{
 		masterPanel.add( jpPanel, "export");
 	}
 	
+///////////////////////////////////////////////////////////////////////
+//
+// Function: addLabel                        
+//
+// Description:
+// Overrides the default protected addLabel to display the Export title.
+//
+///////////////////////////////////////////////////////////////////////
 	protected JLabel addLabel()
     {
     	return new JLabel("Export");
     }
 	
+///////////////////////////////////////////////////////////////////////
+//
+// Function: getData                         
+//
+// Description:
+// Retrieves the list of recipes that can be exported
+//
+///////////////////////////////////////////////////////////////////////
 	protected String[] getData()
 	{
 		ImportExport export = new ImportExport();
@@ -172,16 +229,40 @@ class ExportGui  extends ImportExportGui
 
 class ImportGui extends ImportExportGui
 {
+///////////////////////////////////////////////////////////////////////
+//
+// Function: Constructor                                
+//
+// Description:
+// Initializes the class and adds itself to the master layout.
+//
+///////////////////////////////////////////////////////////////////////
     public ImportGui( JPanel masterPanel )
 	{
 		masterPanel.add( jpPanel, "import");
 	}
 	
+///////////////////////////////////////////////////////////////////////
+//
+// Function: addLabel                        
+//
+// Description:
+// Overrides the default protected addLabel to display the Import title.
+//
+///////////////////////////////////////////////////////////////////////
 	protected JLabel addLabel()
     {
     	return new JLabel("Import");
     }
 	
+///////////////////////////////////////////////////////////////////////
+//
+// Function: getData                         
+//
+// Description:
+// Retrieves the list of recipes that can be imported
+//
+///////////////////////////////////////////////////////////////////////
 	protected String[] getData()
 	{
 		 ImportExport imp = new ImportExport();

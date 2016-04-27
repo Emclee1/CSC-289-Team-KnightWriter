@@ -8,6 +8,14 @@ import org.apache.commons.lang.StringUtils;
 
 import gui.RecipeGui;
 
+///////////////////////////////////////////////////////////////////////
+//
+// Filename: Search.java
+//
+// Description:
+// Creates SQL statements to search the database
+//
+/////////////////////////////////////////////////////////////////////////
 public class Search 
 {
 	protected ResultSet results;

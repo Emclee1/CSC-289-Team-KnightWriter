@@ -3,6 +3,15 @@ package kitt;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+///////////////////////////////////////////////////////////////////////
+//
+//Filename: ComboItem.java
+//
+// Description:
+// Creates an item to return a string or integer based on the combo box
+//
+/////////////////////////////////////////////////////////////////////////
+
 public class ComboItem 
 {
 	private String name;

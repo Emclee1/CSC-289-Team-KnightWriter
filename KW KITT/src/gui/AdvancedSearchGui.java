@@ -35,6 +35,46 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import javax.swing.JScrollPane;
 
+///////////////////////////////////////////////////////////////////////
+//
+// Filename: AdvancedSearchGui.java      
+//
+// Description:
+// The program takes user input and a criteria to retrieve
+// all relevant search results
+//
+/////////////////////////////////////////////////////////////////////////
+
+///////////////////////////////////////////////////////////////////////
+//
+// Class: AdvancdSearchGui                              
+//
+// Description:
+// This class is responsible for displaying the information returned
+// from using the advanced search. Users can search by Course, Ingredient
+// Recipe name, and calories
+//
+// List of data members --
+//
+// JSplitPane splitPane
+// JPanel lPanel
+// ButtonGroup btnMenu
+// JTextField searchField
+// JComboBox<ComboItem> comboBox
+// Search advSearch
+// JPanel rPanel
+// JScrollPane scrollPane
+//
+// List of member functions--
+// 
+// addPanelData
+// addPanelData( JPanel, CardLayout )
+// createRadioPanel
+// addLabel
+// perforSearch
+// actionPerformed
+//
+///////////////////////////////////////////////////////////////////////
 public class AdvancedSearchGui extends KITTGUI implements ActionListener
 {
     protected JSplitPane splitPane;
@@ -46,19 +86,45 @@ public class AdvancedSearchGui extends KITTGUI implements ActionListener
     private JPanel rPanel;
 	private JScrollPane scrollPane;
     
-    
+///////////////////////////////////////////////////////////////////////
+//
+// Function: Constructor                                
+//
+// Description:
+// Initializes the class and adds itself to the master layout. Also
+// adds a reference to the master variables to its button listeners.
+//
+///////////////////////////////////////////////////////////////////////
     public AdvancedSearchGui( JPanel masterPanel, CardLayout cardLayout )
 	{
 		addPanelData( masterPanel, cardLayout );
 		masterPanel.add( jpPanel, "advSearch" );
 	}
 	
-	protected void addPanelData()
-	{
-		addPanelData( new JPanel(), new CardLayout() );
-	}
+///////////////////////////////////////////////////////////////////////
+//
+// Function: addPanelData                                    
+// 
+// Description:
+// Overrides the default protected addPanelData to do nothing
+//            
+///////////////////////////////////////////////////////////////////////
+	protected void addPanelData(){}
 	
-	protected void addPanelData( JPanel masterPanel, CardLayout cardLayout )
+///////////////////////////////////////////////////////////////////////
+//
+//Function: addPanelData                                    
+//
+// Description:
+// Overrides the default protected addPanelData to create the Gui as
+// a split pane that displays criteria and results.
+//
+// Parameters:  
+// masterPanel  : In charge of changing panels to display different Guis
+// masterLayout : The layout of the master panel that switches visible panels
+//
+///////////////////////////////////////////////////////////////////////
+	protected void addPanelData( JPanel masterPanel, CardLayout masterLayout )
 	{
     	advSearch = new Search();
     	splitPane = new JSplitPane();
@@ -69,7 +135,6 @@ public class AdvancedSearchGui extends KITTGUI implements ActionListener
         splitPane.setLeftComponent(lPanel);
         
         JPanel radioPanel = createRadioPanel();
-        //searchField.setVisible( false );
         
         JButton btnConfirm = new JButton("View Matching Recipes");
         btnConfirm.addMouseListener(new MouseAdapter() 
@@ -78,7 +143,7 @@ public class AdvancedSearchGui extends KITTGUI implements ActionListener
         	public void mouseClicked(MouseEvent arg0)
         	{
         		rPanel.removeAll();
-        		performSearch( masterPanel, cardLayout );
+        		performSearch( masterPanel, masterLayout );
         		scrollPane.setViewportView( rPanel );
         	}
         });
@@ -141,6 +206,14 @@ public class AdvancedSearchGui extends KITTGUI implements ActionListener
         splitPane.setRightComponent(scrollPane);
 	}
 	
+///////////////////////////////////////////////////////////////////////
+//
+// Function: createRadioPanel                               
+//
+// Description:
+// Adds the available search criteria to the Gui
+//
+///////////////////////////////////////////////////////////////////////
 	public JPanel createRadioPanel()
     {
     	JPanel radioPanel = new JPanel();
@@ -182,11 +255,28 @@ public class AdvancedSearchGui extends KITTGUI implements ActionListener
 		return radioPanel;
     }
 	
+///////////////////////////////////////////////////////////////////////
+//
+// Function: addLabel                        
+//
+// Description:
+// Overrides the default protected addLabel to display the Advanced
+// Search title.
+//
+///////////////////////////////////////////////////////////////////////
 	protected JLabel addLabel()
     {
     	return new JLabel("Advanced Search");
     }
 	
+///////////////////////////////////////////////////////////////////////
+//
+// Function: performSearch                                  
+//
+// Description:
+// Gets results from the information a user has selected
+//
+///////////////////////////////////////////////////////////////////////
 	public void performSearch( JPanel masterPanel, CardLayout cardLayout )
     {
     	String search = "";
@@ -206,6 +296,14 @@ public class AdvancedSearchGui extends KITTGUI implements ActionListener
     	 rPanel = results.getRPanel();
     }
     
+///////////////////////////////////////////////////////////////////////
+//
+// Function: actionPerformed                              
+//
+// Description:
+// Adds a listener for the combo box in charge of the search parameters
+//
+///////////////////////////////////////////////////////////////////////
 	@Override
 	public void actionPerformed(ActionEvent arg0)
 	{
@@ -255,16 +353,61 @@ public class AdvancedSearchGui extends KITTGUI implements ActionListener
 	}
 }
 
+///////////////////////////////////////////////////////////////////////
+//
+// Class: ResultGui
+//
+// Description:
+// This class is responsible for displaying the results from 
+// an Advanced and Simple Search
+//
+// List of data members --
+//
+// JPanel panel;
+// JScrollPane scrollPane
+//
+// List of member functions--
+//
+// addLabel
+// addPanelData
+// addResults
+// getRPanel
+//
+///////////////////////////////////////////////////////////////////////
 class ResultGui extends KITTGUI
 {
 	private JPanel panel;
 	private JScrollPane scrollPane;
 	
+///////////////////////////////////////////////////////////////////////
+//
+// Function: ResultGui                                
+//
+// Description:
+// Initializes the class
+//
+///////////////////////////////////////////////////////////////////////
 	public ResultGui()
 	{
 		initialize();
 	}
 
+///////////////////////////////////////////////////////////////////////
+//
+// Function: ResultGui( Boolean, JPanel, CardLayout, ArrayList<String> )                           
+//
+// Description:
+// Initializes the class and adds itself to the master layout if it wasn't
+// called by an Advanced Search. Also adds a reference to the master
+// variables to its button listeners.
+//
+// Parameters:  
+// advSearch : Determines the type of search
+// masterPanel  : In charge of changing panels to display different Guis
+// masterLayout : The layout of the master panel that switches visible panels
+// results : Displays this data as JButtons
+//
+///////////////////////////////////////////////////////////////////////
 	public ResultGui( Boolean advSearch, JPanel masterPanel, CardLayout cardLayout, ArrayList<String> results )
 	{
 		initialize();
@@ -276,11 +419,28 @@ class ResultGui extends KITTGUI
 		}
 	}
 	
+///////////////////////////////////////////////////////////////////////
+//
+// Function: addLabel                        
+//
+// Description:
+// Overrides the default protected addLabel to display the Result title.
+//
+///////////////////////////////////////////////////////////////////////
 	protected JLabel addLabel()
     {
     	return new JLabel("Search Results");
     }
 	
+///////////////////////////////////////////////////////////////////////
+//
+// Function: addPanelData                                    
+//
+// Description:
+// Overrides the default protected addPanelData to create the Gui as
+// a panel that displays results.
+//
+///////////////////////////////////////////////////////////////////////
 	protected void addPanelData()
 	{
 		 panel = new JPanel();
@@ -291,7 +451,21 @@ class ResultGui extends KITTGUI
 	    panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 	    jpPanel.add( scrollPane );
 	}
-	
+
+///////////////////////////////////////////////////////////////////////
+//
+// Function: addResults                              
+//
+// Description:
+// Overrides the default protected addPanelData to create the Gui as
+//a split pane that displays criteria and results.
+//
+// Parameters:  
+// masterPanel  : In charge of changing panels to display different Guis
+// masterLayout : The layout of the master panel that switches visible panels
+// results : Displays this data as JButtons
+//
+///////////////////////////////////////////////////////////////////////
 	protected void addResults( JPanel masterPanel, CardLayout masterLayout,ArrayList<String> results )
 	{
 	     panel.removeAll();
@@ -332,6 +506,17 @@ class ResultGui extends KITTGUI
 	    scrollPane.setViewportView( panel );
 	}
 	
+///////////////////////////////////////////////////////////////////////
+//
+// Function: getRPanel                 
+//
+// Description:
+// Returns the result panel to an advanced search.
+//
+// Returns:  
+// panel : Gui of the results
+//
+///////////////////////////////////////////////////////////////////////
 	public JPanel getRPanel()
 	{
 		return panel;

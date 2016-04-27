@@ -32,6 +32,14 @@ import kitt.ImportExport;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+///////////////////////////////////////////////////////////////////////
+//
+// Filename: RecipeGui.java
+//
+// Description:
+// Displays the information for a given recipe
+//
+/////////////////////////////////////////////////////////////////////////
 public class RecipeGui extends KITTGUI
 {
 	Image img;
@@ -90,6 +98,21 @@ public class RecipeGui extends KITTGUI
     	this( true, masterPanel, masterLayout, id );
 	}
     
+///////////////////////////////////////////////////////////////////////
+//
+// Function: Constructor                                
+//
+// Description:
+// Retrieves the recipe from the database and initializes its data. The
+// it is added to the master panel to be swapped.
+//
+// Parameters:  
+// add : Determines if the recipe should be added to the panel
+// masterPanel  : In charge of changing panels to display different Guis
+// masterLayout : The layout of the master panel that switches visible panels
+// id : Used to find the recipe in the database
+//
+///////////////////////////////////////////////////////////////////////
 	public RecipeGui( Boolean add, JPanel masterPanel, CardLayout masterLayout, int id )
 	{
 		try 
@@ -140,6 +163,16 @@ public class RecipeGui extends KITTGUI
 	protected  JButton btnAddIng;
 	protected JButton btnRemIng;
 	
+///////////////////////////////////////////////////////////////////////
+//
+// Function: addPanelData                                    
+//
+// Description:
+// Overrides the default protected addPanelData to the panels for 
+// displaying the recipe name, nutrition label, rating and all other
+// data specific to the recipe
+//
+///////////////////////////////////////////////////////////////////////
 	protected void addPanelData()
 	{
 		values = new ArrayList<JTextField>();
@@ -318,6 +351,18 @@ public class RecipeGui extends KITTGUI
         
 	}
 	
+///////////////////////////////////////////////////////////////////////
+//
+// Function: addButtonListener                
+//
+// Description:
+// Adds a listener to each button to save and change parts of the recipe.
+//
+// Parameters:  
+// masterPanel  : In charge of changing panels to display different Guis
+// masterLayout : The layout of the master panel that switches visible panels
+//
+///////////////////////////////////////////////////////////////////////
 	private void addButtonListeners( JPanel masterPanel, CardLayout masterLayout )
 	{
 		btnEditRecipe.addMouseListener(new MouseAdapter() {
@@ -466,7 +511,7 @@ public class RecipeGui extends KITTGUI
 	double polyfat = 0.0;
 	double transfat = 0.0;
 	double chol = 0;
-	private double cal = 0l;
+	 double cal = 0l;
 	double sod = 0;
 	double carb = 0.0;
 	double fiber = 0.0;
@@ -475,7 +520,20 @@ public class RecipeGui extends KITTGUI
 	
 	protected ArrayList<Double> ingTotals;
 	private String ingredients;
-	
+
+///////////////////////////////////////////////////////////////////////
+//
+// Function: setValues              
+//
+// Description:
+// Initializes each variable
+//
+// Parameters:  
+// recipe  : Recipe row retrieved from the database
+// ingsOrig : Rows of ingredients that belong to this recipe
+// ing_totals : The total amount of each ingredient within the recipe
+//
+///////////////////////////////////////////////////////////////////////
 	protected void setValues( ResultSet recipe, ResultSet ingsOrig, ResultSet ing_totals )
 	{
 		ResultSet ings = ingsOrig;       
@@ -511,7 +569,6 @@ public class RecipeGui extends KITTGUI
 			
 			txtSource.updateUI();			
 			
-			//String[] instructions = recipe.getString( 11 ).split( "</div>\r\n\r\n<div>&nbsp;</div>\r\n\r\n<div>" );
 			String[] instructions = recipe.getString( 11 ).split( "\r\n" );
 			String instr = "";
 			int k = 1;
@@ -560,6 +617,17 @@ public class RecipeGui extends KITTGUI
 		}
 	}
 	
+///////////////////////////////////////////////////////////////////////
+//
+// Function: updateNutritionLabel               
+//
+// Description:
+// Updates the nutrition label after any changes are made
+//
+// Parameters:  
+// first  : Determines if its the first time the function is called
+//
+///////////////////////////////////////////////////////////////////////
 	protected void updateNutritionLabel( boolean first )
 	{
 		double servRatio = 1 / Double.parseDouble( lblServingSizeValue.getText() ) * Double.parseDouble( comboBoxServings.getSelectedItem().toString() );
@@ -603,11 +671,30 @@ public class RecipeGui extends KITTGUI
         }
 	}
 	
+///////////////////////////////////////////////////////////////////////
+//
+//Function: getCalories         
+//
+// Description:
+//  Retrieves the calories in the recipe
+//
+// Returns:  
+// calories  : Returns the amount of calories the recipe contains for searches
+//
+///////////////////////////////////////////////////////////////////////
 	public double getCalories()
 	{
 		return cal;
 	}
 	
+///////////////////////////////////////////////////////////////////////
+//
+// Function: addIngredient            
+//
+// Description:
+// Gives users the ability to add ingredients to a recipe
+//
+///////////////////////////////////////////////////////////////////////
 	protected void addIngredient() throws SQLException, NumberFormatException
 	{
 		ResultSet ings = Database.st.executeQuery( "SELECT ing_name, unit FROM Ingredient ORDER BY ing_name" );
@@ -716,6 +803,17 @@ public class RecipeGui extends KITTGUI
 		}
 	}
 	
+///////////////////////////////////////////////////////////////////////
+//
+//Function: saveRecipe             
+//
+// Description:
+// Saves any changes made to a recipe
+//
+// Returns:  
+// result  : Determines if recipe saved correctly
+//
+///////////////////////////////////////////////////////////////////////
 	protected int saveRecipe()
 	{
 		int result = 0;
@@ -758,7 +856,18 @@ public class RecipeGui extends KITTGUI
 		
 		return result;
 	}
-	
+
+///////////////////////////////////////////////////////////////////////
+//
+//Function: saveIngredients              
+//
+// Description:
+// Saves the ingredient changes to a recipe
+//
+// Returns:  
+// result  : Determines if ingredients saved correctly
+//
+///////////////////////////////////////////////////////////////////////
 	protected void saveIngredients() throws SQLException
 	{
 		String[] ingsFull = txtpnIngredients.getText().split( "\n" );
@@ -781,7 +890,18 @@ public class RecipeGui extends KITTGUI
 			}
 		}
 	}
-	
+
+///////////////////////////////////////////////////////////////////////
+//
+// Function: addStars    
+//
+// Description:
+// Adds rating stars to the panel
+//
+// Parameters:  
+// stars  : Displays stars based on a rating the user has entered
+//
+///////////////////////////////////////////////////////////////////////
 	protected void addStars( int stars )
 	{
 		starList = new ArrayList<JButton>();
@@ -858,7 +978,22 @@ public class RecipeGui extends KITTGUI
         	break;
         }
 	}
-	
+
+///////////////////////////////////////////////////////////////////////
+//
+// Function: btnStarActionListner
+//
+// Description:
+// Adds a listener to each star button to display the rating
+//
+// Parameters:  
+// btnStar1  : Button for 1 star
+// btnStar2  : Button for 2 stars
+// btnStar3  : Button for 3 stars
+// btnStar4  : Button for 4 stars
+// btnStar5  : Button for 5 stars
+//
+///////////////////////////////////////////////////////////////////////
 	private void btnStarActionListner(JButton btnStar1, JButton btnStar2, JButton btnStar3,
             JButton btnStar5, JButton btnStar4)
     {
@@ -947,9 +1082,17 @@ public class RecipeGui extends KITTGUI
             }
         });
     }
-	
+
 	JPanel jpNutritionFacts;
 	
+///////////////////////////////////////////////////////////////////////
+//
+// Function: addNutritionLabel
+//
+// Description:
+// Creates and add the nutrition label to the primary panel
+//
+///////////////////////////////////////////////////////////////////////
 	protected void addNutritionLabel()
 	{
 		 jpNutritionFacts = new JPanel();
@@ -1217,7 +1360,15 @@ class NewRecipeGui extends RecipeGui
 		addButtonListeners( masterPanel, masterLayout );
 		masterPanel.add( jpPanel_1, "newrecipe");
 	}
-	
+
+///////////////////////////////////////////////////////////////////////
+//
+// Function: setValues              
+//
+// Description:
+// Initializes each variable
+//
+///////////////////////////////////////////////////////////////////////
 	protected void setValues()
 	{
 		txtpnRecipe.setText( "" );
@@ -1266,10 +1417,35 @@ class NewRecipeGui extends RecipeGui
 	
 	private JButton btnSave;
 	private JButton btnClear;
-	
+
+///////////////////////////////////////////////////////////////////////
+//
+// Function: addButtonListener
+//
+// Description:
+// Overrides addButtonListener to do nothing
+//
+//Parameters:  
+//btnEditRecipe  : Button for 1 star
+//btnSaveRecipe  : Button for 2 stars
+//btnCancel  : Button for 3 stars
+//
+///////////////////////////////////////////////////////////////////////
 	protected void addButtonListeners(JButton btnEditRecipe, JButton btnSaveRecipe, JButton btnCancel,
 			JButton btnFavorite) {}
-	
+
+///////////////////////////////////////////////////////////////////////
+//
+//Function: addButtonListeners
+//
+//Description:
+//Adds a listener to each used to create a new recipe
+//
+// Parameters:  
+// masterPanel  : In charge of changing panels to display different Guis
+// masterLayout : The layout of the master panel that switches visible panels
+//
+///////////////////////////////////////////////////////////////////////
 	private void addButtonListeners( JPanel masterPanel, CardLayout masterLayout )
 	{
 		btnSave.addMouseListener(new MouseAdapter() {
@@ -1343,6 +1519,17 @@ class NewRecipeGui extends RecipeGui
 		});
 	}	
 	
+///////////////////////////////////////////////////////////////////////
+//
+//Function: saveRecipe             
+//
+//Description:
+//Saves any changes made to a recipe
+//
+//Returns:  
+//result  : Determines if recipe saved correctly
+//
+///////////////////////////////////////////////////////////////////////
 	protected int saveRecipe()
 	{
 		try

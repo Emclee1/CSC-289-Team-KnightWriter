@@ -36,6 +36,33 @@ import net.miginfocom.swing.MigLayout;
 import javax.swing.JPopupMenu;
 import java.awt.Color;
 
+///////////////////////////////////////////////////////////////////////
+//
+// Filename: KITTGUI.java
+//
+// Description:
+// The template that hold the master panel and card layout
+// that are used to create and swap panes.
+//
+// List of data members --
+//
+// JFrame frame
+// JTextField textSearch
+// JPanel jpPanel
+// JPanel jpContent
+// CardLayout cardLayou
+// JPopupMenu popupMenu
+//
+// List of member functions--
+//
+// main
+// initialize
+// addPanelData
+// addLabel
+// listener
+// updateFavorites
+//
+/////////////////////////////////////////////////////////////////////////
 public class KITTGUI
 {
     protected JFrame frame;
@@ -43,6 +70,7 @@ public class KITTGUI
     protected JPanel jpPanel;
     protected JPanel jpContent;
     protected CardLayout cardLayout = new CardLayout(0, 0);
+    protected JPopupMenu popupMenu;
     
     /**
      * Create the application.
@@ -179,16 +207,42 @@ public class KITTGUI
         addPanelData();
      }
     
+///////////////////////////////////////////////////////////////////////
+//
+// Function: addLabel                        
+//
+// Description:
+// The default protected addLabel to display each panel's title.
+//
+///////////////////////////////////////////////////////////////////////
     protected JLabel addLabel() { return new JLabel(); }
     
-    protected JPopupMenu popupMenu;
-    
+///////////////////////////////////////////////////////////////////////
+//
+// Function: addPanelData                                    
+//
+// Description:
+// The default protected addPanelData to create each specific Gui
+//
+///////////////////////////////////////////////////////////////////////
     protected void addPanelData()
     {
     	WelcomeGui welcome = new WelcomeGui( jpContent );
     	cardLayout.show( jpContent, "welcome");
     }
     
+///////////////////////////////////////////////////////////////////////
+//
+// Function: listener                                  
+//
+// Description:
+// Listener for KITTs constant buttons: favorites, new recipe, remove
+// recipe, about, home, search, advanced search
+//
+ // Parameters:  
+ // button : Based on the specific button adds a listener
+//
+///////////////////////////////////////////////////////////////////////
     protected void listener( JButton button )
     {
     	switch( button.getText() )
@@ -337,6 +391,14 @@ public class KITTGUI
     	}
     }
     
+///////////////////////////////////////////////////////////////////////
+//
+// Function: updateFavorites                                  
+//
+// Description:
+// Called whenever a new recipe is added to the favorites.
+//
+///////////////////////////////////////////////////////////////////////
     protected void updateFavorites()
     {
     	ArrayList<String> favs = Search.getFavorites();
